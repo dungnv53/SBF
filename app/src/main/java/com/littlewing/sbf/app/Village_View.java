@@ -4,6 +4,7 @@ import java.util.Random;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +26,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 class Village_View extends SurfaceView implements SurfaceHolder.Callback {
@@ -53,6 +55,18 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
         public static final int STATE_READY = 3;
         public static final int STATE_RUNNING = 4;
         public static final int STATE_WIN = 5;
+
+        public static final int LEFT = 0;
+        public static final int RIGHT = 1;
+        public static final int UP = 2;
+        public static final int DOWN = 3;
+
+        public static final int DRUG_STORE = 11;
+        public static final int ITEM_SHOP = 12;
+        public static final int EASTERN_BOY = 13;
+        public static final int SOUTHERN_BOY = 14;
+        public static final int WESTERN_BOY = 15;
+        public static final int NORTHERN_BOY = 16;
 
         private static final String KEY_X = "h_x";
         private static final String KEY_Y = "h_y";
@@ -128,8 +142,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
 
             // load background image as a Bitmap instead of a Drawable b/c
             // we don't need to transform it and it's faster to draw this way
-            mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.village2);
-            mBackgroundImage = Bitmap.createScaledBitmap(mBackgroundImage, scr_width, (int)(scr_height/2), true);
+            mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.menu_vil);
 
             allclear = BitmapFactory.decodeResource(res, R.drawable.allclear);
             allclear = Bitmap.createScaledBitmap(allclear, scr_width, (int)(scr_height/2), true);
@@ -148,6 +161,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
             synchronized (mSurfaceHolder) {
                 mLastTime = System.currentTimeMillis() + 100;
                 setState(STATE_RUNNING);
+                setHeroCenter();
             }
         }
 
@@ -258,7 +272,24 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
              */
             synchronized (mSurfaceHolder) {
                 mMode = mode;
+                if(inRange(h_x, 550, 700) && inRange(h_y, 550, 700)) {
+                    mMode = EASTERN_BOY;
+                }
 
+                if(mMode == DRUG_STORE) { // TODO change toast to text view or draw cooler
+                    CharSequence drugStore = "Drug Store";
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(mContext, drugStore, duration);
+                    toast.show();
+                } else if(mMode == EASTERN_BOY) {
+                    CharSequence text = "Eastern Boy";
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(mContext, text, duration);
+                    toast.show();
+                    // TODO thread class has no intent ? --> need in Ville class
+//                    Intent intent = new Intent(this, SBF_View.class);
+//                    startActivity(intent);
+                }
                 if (mMode == STATE_RUNNING) {
                     Message msg = mHandler.obtainMessage();
                     Bundle b = new Bundle();
@@ -284,8 +315,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                         str = message + "\n" + str;
                     }
 
-                    if (mMode == STATE_LOSE)
-                    {
+                    if (mMode == STATE_LOSE) {
                         str = "\n\n" + "You lose!" + "\n Good job!";
                     }
 
@@ -392,18 +422,26 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
         private void updatePhysics() {
             long now = System.currentTimeMillis();
             if (mLastTime > now) return;
-            mLastTime = now;                    return;
+            mLastTime = now; return;
         }
 
         public boolean onTouch(MotionEvent event) {
             int x = (int)event.getX();
             int y = (int)event.getY();
+
             switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE:
-                    if (h_x > 13 && x < h_x) { // tap on left side
-                        heroMove(-12, 12, x, y);
-                    } else if (h_x < (scr_width-x_bound) && x >= h_x) { // tap on right side
-                        heroMove(12, 12, x, y);
+                    if (inRange(x, 220, 120) && inRange(y, 860, 260)) { // tap on left side TODO hardcode
+                        heroMove(12, LEFT);
+                    } else if (inRange(x, 0, 120) && inRange(y, 860, 260)) { // tap on right side 170-50 for center
+                        heroMove(12, RIGHT);
+                    }
+                    // Move up n down
+                    if(inRange(x, 120, 100) && inRange(y, 840, 100)) {
+                        heroMove(12, UP);
+                    }
+                    if(inRange(x, 120, 100) && inRange(y, 1020, 100)) {
+                        heroMove(12, DOWN);
                     }
                     break;
                 case MotionEvent.ACTION_DOWN:
@@ -417,22 +455,87 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
             }
             return true;
         }
-        public void heroMove(int deltaX, int deltaY, int x, int y) {
-            if(y < scr_height*3/4) { h_x += deltaX;
-                if(y < (h_y-82)) { h_y -= deltaY; } else if(y >= (h_y+82)) { h_y += deltaY; } // 82 is border for hero area
+        public void heroMove(int delta, int direction) {
+            switch(direction) {
                 // TODO set boundary by screen W-H ratio
-                }
-            if (mHeroIndex < 2) {
-                mHeroIndex ++;
-                if (mHeroIndex == 2)  mHeroIndex = 0;
-                else if (mHeroIndex == 0)  mHeroIndex = 1;
-            } else {
-                mHeroIndex = 1;
-                mHeroIndex ++;
-                if (mHeroIndex == 2)  mHeroIndex = 0;
-                else if (mHeroIndex == 0)  mHeroIndex = 1;
+                case LEFT:                // move left
+                    if(inRange(h_x, 150, 410)) {
+                        h_x += delta;
+                    } else {
+                        h_x = 560;
+                    }
+                    heroMotion();
+                    break;
+                case RIGHT:               // move right
+                    if(inRange(h_x, 150, 410)) {
+                        h_x -= delta;
+                    } else {
+                        h_x = 150;
+                    }
+                    heroMotion();
+                    break;
+                case UP:               // move up
+                    if(inRange(h_y, 360, 235)) {
+                        h_y -= delta;
+                    } else {
+                        h_y = 590;
+                    }
+                    heroMotion();
+                    break;
+                case DOWN:               // move down
+                    if(inRange(h_y, 360, 235)) {
+                        h_y += delta;
+                    } else {
+                        h_y = 360;
+                    }
+                    heroMotion();
+                    break;
+
             }
         }
+
+        // Use sprite image to animate hero move
+        public void heroMotion() {
+            if (mHeroIndex < 2) {
+                mHeroIndex++;
+                if (mHeroIndex == 2) mHeroIndex = 0;
+                else if (mHeroIndex == 0) mHeroIndex = 1;
+            } else {
+                mHeroIndex = 1;
+                mHeroIndex++;
+                if (mHeroIndex == 2) mHeroIndex = 0;
+                else if (mHeroIndex == 0) mHeroIndex = 1;
+            }
+        }
+        // Tap on movePad to move hero left, right, up n down
+        public void tapMove(int tapX, int tapY, int topX, int topY, int width, int height, int direction) {
+            // TODO cho topx,y width height thanh class Rectangle va Point
+            if(inRange(tapX, topX, width) && inRange(tapY, topY, height)) {
+                heroMove(12, direction);
+            }
+        }
+
+        // Check if number x in a range
+        public boolean inRange(int xCheck, int x, int range) {
+            if((xCheck <= x+range) && (xCheck >= x)) {
+                return true;
+            }
+            return false;
+        }
+
+        public boolean inVillage() {
+            if(inRange(h_x, 150, 410) && inRange(h_y, 360, 235)) {
+                return true;
+            }
+            return false;
+        }
+
+        public void setHeroCenter() {
+            h_x = 360;
+            h_y = 500; // set hero in center village
+        }
+
+        // TODO check inRectangle
 
     }
     // end class Village_Thread
@@ -448,12 +551,22 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
 
     private MediaPlayer mpx;
 
+    public void testIntent() {
+        Intent intent = new Intent(mContext, SBF.class);
+        mContext.startActivity(intent);
+//        Intent intent = new Intent(Intent.ACTION_MAIN);
+//        intent.addCategory(Intent.CATEGORY_HOME);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+    }
+
     public Village_View(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
+//        testIntent();
 
         // create thread only; it's started in surfaceCreated()
         thread = new VillageThread(holder, context, new Handler() {
