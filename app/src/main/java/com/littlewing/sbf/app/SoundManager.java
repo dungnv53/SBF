@@ -1,4 +1,4 @@
-package com.example.sbf;
+package com.littlewing.sbf.app;
 
 import java.util.HashMap;
 

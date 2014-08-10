@@ -357,35 +357,18 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         			98, 
         			(float) donald.getDonaldX(), 140, paint);
         	}
-//        	Log.d("donald rect ]]]]]]]]]]", donald.getDonaldX() + "yyyyyyyyyyy " + donald.getDonaldY());
         	for(int ii = 0; ii < 3; ii ++) {
         		luie[ii].act(1, scr_width, scr_height);
         		luie[ii].move();
-//        		canvas.drawBitmap(luie[ii].getBossImage(), luie[ii].getDonaldX(), luie[ii].getDonaldY(), null);
-            	
+
             	paint.setStyle(Style.FILL_AND_STROKE);
             	paint.setColor(Color.RED);
-//            	canvas.drawRect((float) luie[ii].getDonaldX()-5,
-////            			luie[ii].getDonaldY() - 2,
-//            			luie[ii].getDonaldY() + (luie[ii].getHp()*4/7) - 2,
-//            			(float) luie[ii].getDonaldX(), 30 + luie[ii].getDonaldY(), paint);
-            	// maxhp / 32 = 56/32 = 1.75 
-            	// -> hp_view = hp*7/8 - 2
-            	// top = getY + hp_view
             	
             	luie[ii].setBomb(bomb);
             	luie[ii].item.dropBomb(luie[ii].getDonaldY(), 200);
-//            	canvas.drawBitmap(luie[ii].item.getImage(), luie[ii].item.getX(), luie[ii].item.getY(),null);
             	if (luie[ii].getHp() > 0) {
             		canvas.drawBitmap(luie[ii].getBossImage(), luie[ii].getDonaldX(), luie[ii].getDonaldY(), null);
-//            	canvas.drawBitmap(item[2], luie[ii].item.getX(), luie[ii].item.getY(),null);
-//            	canvas.drawRect((float) luie[ii].getDonaldX()-5,
-////            			luie[ii].getDonaldY() - 2,
-//            			luie[ii].getDonaldY() + (luie[ii].getHp()*4/7) - 34,
-//            			(float) luie[ii].getDonaldX(), 30 + luie[ii].getDonaldY(), paint);
-//            	Log.d("luie hp top top top ++++++++++++", " " +  (luie[ii].getDonaldY() + (luie[ii].getHp()*4/7 - 2) ) );
             	}
-//            	Log.d("luie huey n dwell", luie[ii].item.getX() + "|||||||||| ||||||||||| " + luie[ii].item.getY() );
         	}
         	
         }
