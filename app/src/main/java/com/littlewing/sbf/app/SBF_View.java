@@ -966,17 +966,18 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 //    	             	canvas.drawBitmap(snow_shadow, mLeft, mTop + 22, null);
     	             	// chinh mLeft va Top gay ra loi hp
     	             	// do left top da dc -> dung h_x h_y
+                        int hp_lose = 1;
     	             	if ((donald.getDonaldX()+20 >= mLeft) && (donald.getDonaldX() - 10) <= mLeft) {
     	             		if( (donald.getDonaldY()+10 >= (180 - 12*ii)) && (donald.getDonaldY()-20) <= (180 - 12*ii)) {
 //    	             		if( (donald.getDonaldY()+10 >= mTop) && ( (donald.getDonaldY()-20) <= mTop) ) {
-    	             			donald.setHp(donald.getHp() - 4);
+    	             			donald.setHp(donald.getHp() - hp_lose);
     	             			m_snow_fire = 0;
     	             		}
     	             	}
 //    	             	Log.d("Vi tri snow la ", "++++++++++++ : " + mLeft + " Y -- : " + (mTop) );
     	             	if ( (mLeft <= (luie[0].getDonaldX() + 20)) && (mLeft >= (luie[0].getDonaldX() - 10))) {
                     		if ( ((180 - 12*ii) <= (luie[0].getDonaldY() + 20)) && ((180 - 12*ii) >= (luie[0].getDonaldY() - 10))) {
-                    			luie[0].setHp(luie[0].getHp() - 6);
+                    			luie[0].setHp(luie[0].getHp() - hp_lose);
                     			mTop = 180; // fai set lai snow_y ko thi hp mat lien tuc
 //                    			Log.d("snow wwwwwwwww ", "bomb bbbbbb " + luie[0].getHp());
                     			Log.d("Enemy xxxxx000000000xxx", luie[0].getDonaldX() + " yyyy0000000yy " + luie[0].getDonaldY() + " h x " + mLeft);
@@ -985,7 +986,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                     	}
                     	if ( (mLeft <= (luie[1].getDonaldX() + 10)) && (mLeft >= (luie[1].getDonaldX() - 10))) {
                     		if ( ((180 - 12*ii) <= (luie[1].getDonaldY() + 20)) && ((180 - 12*ii) >= (luie[1].getDonaldY() - 10))) {
-                    			luie[1].setHp(luie[1].getHp() - 6);
+                    			luie[1].setHp(luie[1].getHp() - hp_lose);
                     			mTop = 180; // fai set lai snow_y ko thi hp mat lien tuc
 //                    			Log.d("snow wwwwwwwwwwwwwww ", snow_h_x + "     " + snow_h_y);
 //                    			Log.d("luieeeee 11111w ", "bomb bbbbbb11111 " + luie[1].getHp() + " h_x " + h_x);
@@ -996,7 +997,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                     	}
                     	if ( (mLeft <= (luie[2].getDonaldX() + 10)) && (mLeft >= (luie[2].getDonaldX() - 10))) {
                     		if ( ((180 - 12*ii) <= (luie[2].getDonaldY() + 20)) && ((180 - 12*ii) >= (luie[2].getDonaldY() - 10))) {
-                    			luie[2].setHp(luie[2].getHp() - 6);
+                    			luie[2].setHp(luie[2].getHp() - hp_lose);
                     			mTop = 165; // fai set lai snow_y ko thi hp mat lien tuc
 //                    			Log.d("snow wwwww222222222222 ", snow_h_x + "     " + snow_h_y);
 //                    			Log.d("luieeeee 2222222w ", "bomb bb222bb " + luie[2].getHp());
@@ -1392,6 +1393,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 case MotionEvent.ACTION_MOVE:
                     if (h_x > 13 && x < 360) { // tap on left side
                         h_x -= 12;
+                        m_snow_fire = 10;
 //                        	Log.d("PAD LEFT ", " hero x --------: " + h_x + " hero y ^^^^^" + h_y);
                         if(mHeroIndex < 2)
                             mHeroIndex ++;
@@ -1408,6 +1410,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                         // nen goi ham hero_move()
                     } else if (h_x < (scr_width-x_bound) && x >= 360) { // tap on right side
                         h_x += 12;
+                        m_snow_fire = 10;
 //                        	Log.d("PAD RIGHT ", " hero x --------: " + h_x + " hero y ^^^^^" + h_y);
                         if (mHeroIndex < 2)
                         {
