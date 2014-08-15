@@ -212,5 +212,4 @@ public class Donald {
 		this.max_hp = 56;
 	}
 	
-	
 }

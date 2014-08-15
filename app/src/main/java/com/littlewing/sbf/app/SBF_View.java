@@ -144,8 +144,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 
 		private Bitmap v;
 
-        public SBFThread(SurfaceHolder surfaceHolder, Context context,
-                Handler handler) {
+        public SBFThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
             // get handles to some important objects
             mSurfaceHolder = surfaceHolder;
             mHandler = handler;
@@ -246,7 +245,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             	paint.setColor(Color.RED);
 
             	luie[ii].setBomb(bomb);
-            	luie[ii].item.dropBomb(luie[ii].getDonaldY(), 200);
+            	luie[ii].item.dropBomb(luie[ii].getDonaldY(), 3/4*getHeight());
             	if (luie[ii].getHp() > 0) {
             		canvas.drawBitmap(luie[ii].getBossImage(), luie[ii].getDonaldX(), luie[ii].getDonaldY(), null);
             	}
@@ -547,14 +546,12 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         	for(int ii = 0; ii < 3; ii ++) {
         		luie[ii].act(1, scr_width, scr_height);
         		luie[ii].move();
-        		int luie_temp_x = luie[ii].getDonaldX();
-        		int luie_temp_y = luie[ii].getDonaldY();
 
             	paint.setStyle(Style.FILL_AND_STROKE);
             	paint.setColor(Color.RED);
 
             	luie[ii].setBomb(bomb);
-            	luie[ii].item.dropBomb(luie[ii].getDonaldY(), 200);
+            	luie[ii].item.dropBomb(luie[ii].getDonaldY(), 3/4*getHeight());
 
             	if (luie[ii].getHp() > 0) {
             		canvas.drawBitmap(luie[ii].getBossImage(), luie[ii].getDonaldX(), luie[ii].getDonaldY(), null);
@@ -673,7 +670,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             } else if (mMode == STATE_PAUSE) {
             	canvas.save();
             } else {
-            	canvas.drawBitmap(mTitleImage, 0, 60, null);
+            	canvas.drawBitmap(mTitleImage, 0, getHeight()/4, null);
             }
         	canvas.save();
         	canvas.restore();
