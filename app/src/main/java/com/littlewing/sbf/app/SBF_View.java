@@ -646,7 +646,23 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
-        /**
+
+        /* Draw rectangle | show hp (percent) like in other game: AOE (horizontal).
+         *
+        * */
+        public void drawEnemy(Canvas cv, Donald huey, int snow_e_y_idx, int rand_donald_y, int h_y_step) {
+            test_snow_e_y [snow_e_y_idx] += 6;
+            if(test_snow_e_y[snow_e_y_idx] >= 205)
+                test_snow_e_y[snow_e_y_idx] = 70;
+            cv.drawBitmap(snow_h, huey.getDonaldX(), test_snow_e_y[snow_e_y_idx]-22 + rand_donald_y, null); // 22 la distance giua snow va shadow
+            cv.drawBitmap(snow_shadow, huey.getDonaldX(), test_snow_e_y[snow_e_y_idx], null);
+
+            if ((h_x - 8) <= huey.getDonaldX() && ((h_x + 8) >= huey.getDonaldX())
+                    && (h_y - h_y_step <= test_snow_e_y[snow_e_y_idx]) && (h_y + h_y_step >= test_snow_e_y[snow_e_y_idx])) {
+                h_hp -= 3;
+            }
+        }
+         /**
          * Draws the hero, enemy, and background to the provided
          * Canvas.
          * Mau cua enemy van chua chuan: Hp giam lien tuc nhu kieu loop neu trung dan nhieu
@@ -663,8 +679,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         	canvas.drawBitmap(mBackgroundImage, 0, 0, null);
         	boss_attack(canvas);
 //            draw_enemy(canvas);
-            // do ham draw_e bi goi lai nen enemy chet lai hoi nen fai tat ham nay di va
-            // ve truc tiep trong doDraw
+            // do ham draw_e bi goi lai nen enemy chet lai hoi nen fai tat ham nay di va ve truc tiep trong doDraw()
 //            playTitleSound();
 //            stopSound();
             donald.act(1, scr_width, scr_height);
@@ -683,7 +698,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         			126 - (donald.getHp()*9/11),
         			(float) donald.getDonaldX(), 126, paint); // 140
 
-//        	Log.d("donald dddddddddddd hppppp hphphphp " ," ===== " + donald.getHp());
         	}
 //        	Log.d("donald rect ]]]]]]]]]]", donald.getDonaldX() + "yyyyyyyyyyy " + donald.getDonaldY());
         	for(int ii = 0; ii < 3; ii ++) {
@@ -700,9 +714,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 ////            			luie[ii].getDonaldY() - 2,
 //            			luie[ii].getDonaldY() + (luie[ii].getHp()*4/7) - 2,
 //            			(float) luie[ii].getDonaldX(), 30 + luie[ii].getDonaldY(), paint);
-            	// maxhp / 32 = 56/32 = 1.75
-            	// -> hp_view = hp*7/8 - 2
-            	// top = getY + hp_view
 
             	luie[ii].setBomb(bomb);
             	luie[ii].item.dropBomb(luie[ii].getDonaldY(), 200);
@@ -712,23 +723,18 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             	int luie_x = luie[ii].getDonaldX();
 //            	e_attack(canvas, luie_x, 200);
 
-//            	canvas.drawBitmap(luie[ii].item.getImage(), luie[ii].item.getX(), luie[ii].item.getY(),null);
             	if (luie[ii].getHp() > 0) {
             		canvas.drawBitmap(luie[ii].getBossImage(), luie[ii].getDonaldX(), luie[ii].getDonaldY(), null);
-//            	canvas.drawBitmap(item[2], luie[ii].item.getX(), luie[ii].item.getY(),null);
             	canvas.drawRect((float) luie[ii].getDonaldX()-5,
 //            			luie[ii].getDonaldY() - 2,
             			luie[ii].getDonaldY() - (luie[ii].getHp()*4/7) + 30,
             			(float) luie[ii].getDonaldX(), 30 + luie[ii].getDonaldY(), paint);
-//            	Log.d("luie hp top top top ++++++++++++", " " +  (luie[ii].getDonaldY() + (luie[ii].getHp()*4/7 - 2) ) );
             	}
-//            	Log.d("luie huey n dwell", luie[ii].item.getX() + "|||||||||| ||||||||||| " + luie[ii].item.getY() );
         	}
 
 //        	for (int jj = 0; jj < 6; jj ++) {
 //        		if (luie[0].item.isDestroyed()) {
 //        			canvas.drawBitmap(item[2], luie[0].item.getX(), 30*jj,null); // luie[ii].item.getY()
-//        			Log.d("luie huey n dwell", luie[0].item.getX() + "|||||||||| ||||||||||| " + luie[0].item.getY() );
 //        		}
 //        	}
 //            bomb.setX(luie[0].getDonaldX());
@@ -744,13 +750,9 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 //            }
 //            else
 //            	bomb.setY(mmy);
-            // Dung nhu du doan viec de mmx = luie.getX la viec ko don gian
-            // vi no dan toi viec item TRUOT chu ko bay nhu da dinh
-            // vi cac tham so x y bi change ma chua control dc
-//            Log.d("luie huey n dwell", luie[0].item.getX() + "|||||||||| ||||||||||| " + luie[0].item.getY() );
+            // Dung nhu du doan viec de mmx = luie.getX la viec ko don gian vi no dan toi viec item TRUOT chu ko bay nhu da dinh vi cac tham so x y bi change ma chua control dc
 
             int yTop = mCanvasHeight - ((int) h_y + mLanderHeight) - 25;
-            // bo /2 o fan tren
             int xLeft = (int) h_x - mLanderWidth / 2;
 
             // Draw the speed gauge, with a two-tone effect
@@ -785,12 +787,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             {
 //            	make_attack(canvas);
             	int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
-                // bo /2 o fan tren
                 int mLeft = h_x + 20; // vi snow lech ra 1 chut
-//            	 int yTop =  (int)(h_y);
-                 // bo /2 o fan tren
-//                 int xLeft = (int) h_x;
-//                 Log.d("")
              	snow_h_y -= 12;
         		if (snow_h_y < 25)
         			snow_h_y = (scr_height-y_bound);
@@ -811,100 +808,65 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 
                  } // end for loop
             }
-            	if (donald.getHp() <= 0) {
-            		if (luie[0].getHp() <= 0 && (luie[1].getHp() <= 0) && (luie[2].getHp() <= 0)) {
-            			mMode = STATE_WIN;
-            		}
-            	}
-            	// Boss attack
-            	if (donald.getHp() >= 0) {
-            		test_snow_h_y += 6;
-            		if (test_snow_h_y >= (scr_height-y_bound))    // biên cho item bay tới.
-            				test_snow_h_y = 80;
+            if (donald.getHp() <= 0) {  // WINNING
+                if (luie[0].getHp() <= 0 && (luie[1].getHp() <= 0) && (luie[2].getHp() <= 0)) {
+                    mMode = STATE_WIN;
+                }
+            }
+            // Boss attack
+            if (donald.getHp() >= 0) {
+                test_snow_h_y += 6;
+                if (test_snow_h_y >= (scr_height-y_bound))    // biên cho item bay tới.
+                        test_snow_h_y = 80;
 //            		test_snow_h_y += 6;
 
-            		canvas.drawBitmap(snow_h, donald.getDonaldX() + get_random1(10), test_snow_h_y-22, null);
-            		// 22 la distance giua snow va shadow
-            		canvas.drawBitmap(snow_shadow, donald.getDonaldX(), test_snow_h_y, null);
-            		if ((h_x + 12) >= donald.getDonaldX() && ((h_x - 12) <= donald.getDonaldX())
-                			&& (h_y + 12 >= test_snow_h_y) && (h_y - 12 <= test_snow_h_y)) {
-                		h_hp -= 4;
-                	}
-            	}
-            	// check snow hit hero
-            	// Van chua su dung dc tinh nang isDestroyed cua Bomb Class de tranh viec
-            	// hp giam lien tuc do snow ko huy.
+                canvas.drawBitmap(snow_h, donald.getDonaldX() + get_random1(10), test_snow_h_y-22, null);
+                // 22 la distance giua snow va shadow
+                canvas.drawBitmap(snow_shadow, donald.getDonaldX(), test_snow_h_y, null);
+                if ((h_x + 12) >= donald.getDonaldX() && ((h_x - 12) <= donald.getDonaldX())
+                        && (h_y + 12 >= test_snow_h_y) && (h_y - 12 <= test_snow_h_y)) {
+                    h_hp -= 4;
+                }
+            }
+            // check snow hit hero
+            // Van chua su dung dc tinh nang isDestroyed cua Bomb Class de tranh viec hp giam lien tuc do snow ko huy.
 
-
-            	Log.d("hero hp", "hp " + h_hp);
-            	// hero die ?
-            	if (h_hp <= 0) {
-            		mMode = STATE_LOSE;
-            	}
+            // hero die ?
+            if (h_hp <= 0) {
+                mMode = STATE_LOSE;
+            }
 
             	// enemy attack
             	// cause can not call e_attack_ai() propertly
             	if(luie[0].getHp() > 0) {
-            			test_snow_e_y [0] += 6;
-            			if(test_snow_e_y[0] >= 205)
-            				test_snow_e_y[0] = 70;
-            			canvas.drawBitmap(snow_h, luie[0].getDonaldX() + get_random1(8), test_snow_e_y[0]-22, null);
-                		// 22 la distance giua snow va shadow
-                		canvas.drawBitmap(snow_shadow, luie[0].getDonaldX(), test_snow_e_y[0], null);
-                		Log.d(" ", "test_snow_h_y " + test_snow_e_y[0] + " "  + h_y +
-                				 " luie 0 x " + luie[0].getDonaldX()  + " " + h_x);
-                		if ((h_x - 18) <= luie[0].getDonaldX() && ((h_x + 18) >= luie[0].getDonaldX())
-                    			&& (h_y - 18 <= test_snow_e_y[0]) && (h_y + 18 >= test_snow_e_y[0])) {
-                    		h_hp -= 3;
-                    	}
-
+                    drawEnemy(canvas, luie[0], 0, get_random1(8), 18);
            		}
             	if(luie[1].getHp() > 0) {
-        			test_snow_e_y [1] += 6;
-        			if(test_snow_e_y[1] >= 205)
-        				test_snow_e_y[1] = 70;
-        			canvas.drawBitmap(snow_h, luie[1].getDonaldX() + get_random1(8), test_snow_e_y[1]-22, null);
-            		// 22 la distance giua snow va shadow
-            		canvas.drawBitmap(snow_shadow, luie[1].getDonaldX(), test_snow_e_y[1], null);
-            		if ((h_x - 10) <= luie[1].getDonaldX() && ((h_x + 10) >= luie[1].getDonaldX())
-                			&& (h_y - 10 <= test_snow_e_y[1]) && (h_y + 10 >= test_snow_e_y[1])) {
-                		h_hp -= 3;
-                	}
-
-       		   }
-            	if(luie[2].getHp() > 0) {
-        			test_snow_e_y [2] += 6;
-        			if(test_snow_e_y[2] >= 205)
-        				test_snow_e_y[2] = 70;
-        			canvas.drawBitmap(snow_h, luie[2].getDonaldX(), test_snow_e_y[2]-22, null);
-            		// 22 la distance giua snow va shadow
-            		canvas.drawBitmap(snow_shadow, luie[2].getDonaldX(), test_snow_e_y[2], null);
-
-            		if ((h_x - 8) <= luie[2].getDonaldX() && ((h_x + 8) >= luie[2].getDonaldX())
-                			&& (h_y - 8 <= test_snow_e_y[2]) && (h_y + 8 >= test_snow_e_y[2])) {
-                		h_hp -= 3;
-                	}
+                    drawEnemy(canvas, luie[1], 1, get_random1(8), 10);
        		    }
-                    	if ( (snow_h_x <= (luie[0].getDonaldX() + 20)) && (snow_h_x >= (luie[0].getDonaldX() - 10))) {
-                    		if ( (snow_h_y <= (luie[0].getDonaldY() + 30)) && (snow_h_y >= (luie[0].getDonaldY() - 10))) {
-                    			luie[0].setHp(luie[0].getHp() - 8);
-                    			snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
-                    		}
-                    	}
-                    	if ( (snow_h_x <= (luie[1].getDonaldX() + 20)) && (snow_h_x >= (luie[1].getDonaldX() - 10))) {
-                    		if ( (snow_h_y <= (luie[1].getDonaldY() + 30)) && (snow_h_y >= (luie[1].getDonaldY() - 10))) {
-                    			luie[0].setHp(luie[1].getHp() - 12);
-                    			snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
-                    		}
-                    	}
-                    	if ( (snow_h_x <= (luie[2].getDonaldX() + 20)) && (snow_h_x >= (luie[2].getDonaldX() - 10))) {
-                    		if ( (snow_h_y <= (luie[2].getDonaldY() + 30)) && (snow_h_y >= (luie[2].getDonaldY() - 10))) {
-                    			luie[0].setHp(luie[2].getHp() - 12);
-                    			snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
-                    		}
-                    	}
-                    	paint.setStyle(Style.FILL_AND_STROKE);
-                    	paint.setColor(Color.RED);
+            	if(luie[2].getHp() > 0) {
+                    drawEnemy(canvas, luie[2], 2, 0, 8);
+       		    }
+                if ( (snow_h_x <= (luie[0].getDonaldX() + 20)) && (snow_h_x >= (luie[0].getDonaldX() - 10))) {
+                    if ( (snow_h_y <= (luie[0].getDonaldY() + 30)) && (snow_h_y >= (luie[0].getDonaldY() - 10))) {
+                        luie[0].setHp(luie[0].getHp() - 8);
+                        snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
+                    }
+                }
+                if ( (snow_h_x <= (luie[1].getDonaldX() + 20)) && (snow_h_x >= (luie[1].getDonaldX() - 10))) {
+                    if ( (snow_h_y <= (luie[1].getDonaldY() + 30)) && (snow_h_y >= (luie[1].getDonaldY() - 10))) {
+                        luie[0].setHp(luie[1].getHp() - 12);
+                        snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
+                    }
+                }
+                if ( (snow_h_x <= (luie[2].getDonaldX() + 20)) && (snow_h_x >= (luie[2].getDonaldX() - 10))) {
+                    if ( (snow_h_y <= (luie[2].getDonaldY() + 30)) && (snow_h_y >= (luie[2].getDonaldY() - 10))) {
+                        luie[0].setHp(luie[2].getHp() - 12);
+                        snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
+                    }
+                }
+                paint.setStyle(Style.FILL_AND_STROKE);
+                paint.setColor(Color.RED);
 //                    	canvas.drawRect((float) luie[ii].getDonaldX()-5,
 //                    			luie[ii].getDonaldY() - 2,
 //                    			(float) luie[ii].getDonaldX(), 30 + luie[ii].getDonaldY(), paint);
