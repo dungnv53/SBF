@@ -23,8 +23,7 @@ public class Donald {
 	
 	private Bitmap[] img_Donald = new Bitmap[4];      // Mảng 4 images cho enery hay hero (player). 4 ảnh này tạo nên hình sprites di chuyển.
 	
-	public int getHp()      // Lấy ra máu của nhân 
-	{
+	public int getHp() {
 		return this.hp;
 	}
 	public void setHp(int paramInt) {
@@ -128,8 +127,7 @@ public class Donald {
 	    		  this.dn_y = 50;
 	    	  }
 	      }
-	      else
-	      {
+	      else {
 	    	  if (this.dn_x > 0 && this.dn_x < (screen_width-w_bound)) {  	// eo ro INHERITE COMMON nen cho luon 160 thay
 	    		  this.dn_x += direction;
 	    	  }
@@ -159,69 +157,38 @@ public class Donald {
   public void fire(int paramInt) {
 	  item.dropBomb(this.dn_y, paramInt);
   }
-  public void boss_move()
-  {
-    if ((this.e_boss_move_dir  >= 1) && (this.e_boss_move_dir < 8))
-    {
+  public void boss_move() {
+    if ((this.e_boss_move_dir  >= 1) && (this.e_boss_move_dir < 8)) {
       this.e_boss_move_dir += 1; // tang dan dir
       if (this.e_boss_move_dir == 8) // den 8 thi set cho 100
         this.e_boss_move_dir = 100; // hinh nhu dir la chieu boss
-      // move va khoang cach move , vi du dir = 100 thi co nghia la sang fai hoac trai het man hinh
-      // dung nhu trong game the hien,
-      // nhu vay viec nay ko do ham AI dam nhiem ma thu cong toan tap
-      // va game co ve tu nhien hon thay vi random mai
-//      message2 = " dir: 100 *******" + e_boss_move_dir;
-//	    System.out.println(message2);
     }
-    else if ((this.e_boss_move_dir >= 21) && (this.e_boss_move_dir < 31))
-    {
+    else if ((this.e_boss_move_dir >= 21) && (this.e_boss_move_dir < 31)) {
       this.e_boss_move_dir += 1; // tang dan len 31 (cho ko fai 30) nha vi khi dir = 30 thi van chay tiep
       if ((this.e_boss_x != 2) && (this.e_boss_move_dir % 2 == 0))
-    	  // toa do x cua boss khac 2; va dir chan
         this.e_boss_x -= 1;   // cho boss_x giam dan
       if (this.e_boss_move_dir == 31)
         this.e_boss_move_dir = 100;
-      // Hinh nhu 100 la di chuyen toan man hinh, nhung co 1 
-      // doan ma nao do DA tach no lam 5-6 doan de Boss move ko lien mach ?
-//      message2 = " dir:21-31*********" + e_boss_move_dir;
-//	    System.out.println(message2);
     }
-    else if ((this.e_boss_move_dir > -31) && (this.e_boss_move_dir <= -21))
-    	// am la move nguoc lai nhung ko ro co fai la tu phai ve ko?
-    {
+    else if ((this.e_boss_move_dir > -31) && (this.e_boss_move_dir <= -21)) {
       this.e_boss_move_dir -= 1; // giam DIR cho ve -31?
       
       if ((this.e_boss_x != 22) && (this.e_boss_move_dir % 2 == 0))
-    	  // Dung lam ! day la boss_x cho ko fai DIR. 
-    	  // chan va khac 22 (22 co le la SIZE cua BOSS)
         this.e_boss_x += 1;
       if (this.e_boss_move_dir == -31) // DIR den -31 thi set lai 100
         this.e_boss_move_dir = 100;
-//      message2 = " dir:****************" + e_boss_move_dir;
-//	    System.out.println(message2);
     }
     
   }
-// 2 ham move va move_ai co ve ko du de tao ra animation nhu SBF thi fai?
-// Kha nang co cac doan ma lien quan da CHANGE 2 tham so DIR va X cua boss ?
 
-  public void boss_move_ai()
-  // Ham nay random(6) roi chuyen sang dir 
-  // thanh +-21 de move 1 khoang gan bang SIZE cua BOSS
-  // con gia tri 1 thi ko ro
-  // Di nhien fai TEST BOSS_X de tranh va vao SCREEN size co han.
-  {
-    if (this.e_boss_x == 2)
-    {
+  public void boss_move_ai() {
+    if (this.e_boss_x == 2) {
       this.e_boss_move_dir = -21;
-      // tuong x tinh tu trai sang nen neu = 2 thi fai tang dir cho sao lai giam?
     }
-    else if (this.e_boss_x == 22)
-    {
+    else if (this.e_boss_x == 22) {
       this.e_boss_move_dir = 21;
     }
-    else
-    {
+    else {
         int i = get_random(6);
       if ((i == 0) || (i == 1))
         this.e_boss_move_dir = 21;
@@ -230,8 +197,6 @@ public class Donald {
       else
         this.e_boss_move_dir = 1;
     }
-//    message = " x " + e_boss_x;
-//    System.out.println(message);
   }
 	public Donald(int paramInt1, int paramInt2, Bitmap[] bitmap) {
 		this.dn_x = paramInt1;

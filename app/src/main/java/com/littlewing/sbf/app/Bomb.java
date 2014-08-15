@@ -13,8 +13,6 @@ public class Bomb {
         Bitmap bom_pic[] = new Bitmap[5];
         private int b_idx;			// index for bomb image
         private int damage;		// the hp that enemy lose
-        // dung ra la array thi hon nhung tam de the
-        // private int[] damage = new int[5];
 
         public Bomb(int x, int y, Context context) {
             setDestroyed(true);
