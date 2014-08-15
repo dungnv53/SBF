@@ -33,8 +33,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 	 *
 	 * Has a mode which RUNNING, PAUSED, etc. Has a x, y, dx, dy, ... capturing the
 	 * current ship physics. All x/y etc. are measured with (0,0) at the lower left.
-	 * LOWER LEFT! cho k fai uper left ?
-	 * lieu j2me co the k?
 	 * nhung hinh nhu OpenGL la uperLeft ?
 	 * updatePhysics() advances the physics based on realtime.
 	 *  draw() renders the
@@ -84,9 +82,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
     	 */
     	private int use_special = 0;	// integer for store 3 type of special follow the
     	// mana degree
-    	/**
-    	 * mRes dung load resources
-    	 */
     	Resources mRes;
 
     	/**
@@ -187,10 +182,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 		 * = 600 ms ,
 		 */
 		public static final int GAME_THREAD_DELAY = 600;
-		  /**
-		   * donald
-		   *
-		   */
 		  private Donald donald;
 		  /**
 		   * Mang donald luie
@@ -452,35 +443,14 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             }
             return map;
         }
-
-        /**
-         * Sets if the engine is currently firing.
-         * co the TH1 la setFiring = true roi load 1 PNG cho Firing
-         */
         public void setFiring(boolean firing) {
             synchronized (mSurfaceHolder) {
             }
         }
-
-        /**
-         * Used to signal the thread whether it should be running or not.
-         * Passing true allows the thread to run; passing false will shut it
-         * down if it's already running. Calling start() after this was most
-         * recently called with false will result in an immediate shutdown.
-         *
-         * @param b true to run, false to shut down
-         */
         public void setRunning(boolean b) {
             mRun = b;
         }
 
-        /**
-         * Sets the game mode. That is, whether we are running, paused, in the
-         * failure state, in the victory state, etc.
-         *
-         * @see #setState(int, CharSequence)
-         * @param mode one of the STATE_* constants
-         */
         public  void setState(int mode) {
             synchronized (mSurfaceHolder) {
                 setState(mode, null);
@@ -657,6 +627,25 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         	}
         	while (targetY <= (scr_height-y_bound));
         }
+
+        /*
+         * Check hero fire hit enemy, enemy lose hp. fire_step is snow in grid to check hit target.
+         * hp_lose is value of hp lose if hero fire hit.
+         * mTop: position reset for enemy.
+         * TODO: move to class Donlad instead of lie heer.
+         */
+        public void hitTarget(Donald dn, int fire_step, int hp_lose) {
+            int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
+            int mLeft = h_x + 20; // vi snow lech ra 1 chut
+            if ((dn.getDonaldX()+20 >= mLeft) && (dn.getDonaldX() - 10) <= mLeft) {
+                if( (dn.getDonaldY()+10 >= (180 - 12*fire_step)) && (dn.getDonaldY()-20) <= (180 - 12*fire_step)) {
+                    dn.setHp(dn.getHp() - hp_lose);
+                    mTop = 180; // TODO y ?
+                    m_snow_fire = 0;
+                    //Log.d("Enemy xxxxx000000000xxx", luie[0].getDonaldX() + " yyyy0000000yy " + luie[0].getDonaldY() + " h x " + mLeft);
+                }
+            }
+        }
         /**
          * Draws the hero, enemy, and background to the provided
          * Canvas.
@@ -736,10 +725,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 //            	Log.d("luie huey n dwell", luie[ii].item.getX() + "|||||||||| ||||||||||| " + luie[ii].item.getY() );
         	}
 
-            // ham nay co 0 0 la left va top, co the am (-) duoc
-            // chi ra vi tri cach top va left bao nhieu pixel
-            // nhung anh bck van nhu nhau, van scale nhu nhau
-
 //        	for (int jj = 0; jj < 6; jj ++) {
 //        		if (luie[0].item.isDestroyed()) {
 //        			canvas.drawBitmap(item[2], luie[0].item.getX(), 30*jj,null); // luie[ii].item.getY()
@@ -782,24 +767,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 
             // draw hero at center
 
-//
-//            e_idx_t ++;
-//            if (e_idx_t == 2)
-//            	e_idx_t = 0;
-            // muon repeat chi 2 img dau thi chi can cho index thanh 0 1 thoai
-//            canvas.drawBitmap(mEnemy[e_idx_t], 50, 50, null);
-
-//            b_idx ++;
-//            if (b_idx == 2)
-//            	b_idx = 0;
-//            canvas.drawBitmap(mBoss[b_idx], 100, 100, null);
-
-            // draw the hero follow key moving pad
-            // o day ve ship theo vi tri asteroid nen fai thay gia tri
-            // Rat co the fai viet ham moi handle hero move vi no phuc tap hon nhieu
-            // vi du move n fire ...
-//            canvas.drawBitmap(mHeroMoving[mShipIndex], mJetBoyX, mJetBoyY, null);
-
             // Neu firing thi moi ve bong snow
 //            if (mLaserOn) {
 //                canvas.drawBitmap(mLaserShot, mJetBoyX + mShipFlying[0].getWidth(), mJetBoyY
@@ -833,71 +800,17 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         		// 22 la distance giua snow va shadow
         		canvas.drawBitmap(snow_shadow, h_x + 22, snow_h_y, null);
 
-    	             for (int ii = 0; ii <= (mTop/12); ii ++)
-    	             {
-//    		            mTop -= 5;
-//    		            if (mTop <= 20)
-//    		            	mTop = 200;
-    	            	 // thay mLeft -> h_x
-//    	             	canvas.drawBitmap(snow_h, h_x + 20, 165 - (12*ii), null);
+                 for (int ii = 0; ii <= (mTop/12); ii ++)
+                 {
+                    hitTarget(donald, ii, 1);
+                    hitTarget(luie[0], ii, 1);
+                    hitTarget(luie[1], ii, 1);
+                    hitTarget(luie[2], ii, 1);
 
-//    	             	canvas.drawBitmap(snow_shadow, h_x + 10, 180 -(20*ii) + 22, null);
-//    		            canvas.drawBitmap(snow_h, mLeft, mTop, null);
-//    	             	canvas.drawBitmap(snow_shadow, mLeft, mTop + 22, null);
-    	             	// chinh mLeft va Top gay ra loi hp
-    	             	// do left top da dc -> dung h_x h_y
-                        int hp_lose = 1;
-    	             	if ((donald.getDonaldX()+20 >= mLeft) && (donald.getDonaldX() - 10) <= mLeft) {
-    	             		if( (donald.getDonaldY()+10 >= (180 - 12*ii)) && (donald.getDonaldY()-20) <= (180 - 12*ii)) {
-//    	             		if( (donald.getDonaldY()+10 >= mTop) && ( (donald.getDonaldY()-20) <= mTop) ) {
-    	             			donald.setHp(donald.getHp() - hp_lose);
-    	             			m_snow_fire = 0;
-    	             		}
-    	             	}
-//    	             	Log.d("Vi tri snow la ", "++++++++++++ : " + mLeft + " Y -- : " + (mTop) );
-    	             	if ( (mLeft <= (luie[0].getDonaldX() + 20)) && (mLeft >= (luie[0].getDonaldX() - 10))) {
-                    		if ( ((180 - 12*ii) <= (luie[0].getDonaldY() + 20)) && ((180 - 12*ii) >= (luie[0].getDonaldY() - 10))) {
-                    			luie[0].setHp(luie[0].getHp() - hp_lose);
-                    			mTop = 180; // fai set lai snow_y ko thi hp mat lien tuc
-                    			Log.d("Enemy xxxxx000000000xxx", luie[0].getDonaldX() + " yyyy0000000yy " + luie[0].getDonaldY() + " h x " + mLeft);
-                    		}
-                    		m_snow_fire = 0;
-                    	}
-                    	if ( (mLeft <= (luie[1].getDonaldX() + 10)) && (mLeft >= (luie[1].getDonaldX() - 10))) {
-                    		if ( ((180 - 12*ii) <= (luie[1].getDonaldY() + 20)) && ((180 - 12*ii) >= (luie[1].getDonaldY() - 10))) {
-                    			luie[1].setHp(luie[1].getHp() - hp_lose);
-                    			mTop = 180; // fai set lai snow_y ko thi hp mat lien tuc
-                    			Log.d("Enemy xx11111111111111", luie[1].getDonaldX() + " yyy1111111111yy " +
-                    					luie[1].getDonaldY() + " mLeft " + mLeft);
-                    		}
-                    		m_snow_fire = 0;
-                    	}
-                    	if ( (mLeft <= (luie[2].getDonaldX() + 10)) && (mLeft >= (luie[2].getDonaldX() - 10))) {
-                    		if ( ((180 - 12*ii) <= (luie[2].getDonaldY() + 20)) && ((180 - 12*ii) >= (luie[2].getDonaldY() - 10))) {
-                    			luie[2].setHp(luie[2].getHp() - hp_lose);
-                    			mTop = 165; // fai set lai snow_y ko thi hp mat lien tuc
-                    			Log.d("Enemy xx2222222222222x", luie[2].getDonaldX() + " yyy222222222yyy " +
-                    					luie[2].getDonaldY() + " h_x " + mLeft);
-                    		}
+                    m_snow_fire = 0;
 
-                    	m_snow_fire = 0;
-    	             }
-    	             // if (yTop < 25) ...
-
-    	             m_snow_fire = 0;
-
-    	             } // end for loop
+                 } // end for loop
             }
-//            	if(m_snow_fire == 10) {
-//            		snow_h_y -= 10;
-//            		if (snow_h_y < 25)
-//            			snow_h_y = 200;
-////            		canvas.drawBitmap(snow_h, snow_h_x, snow_h_y-22, null);
-//            		int rand_img = get_random(4);
-//            		canvas.drawBitmap(bomb.getImage(rand_img), h_x + 12, snow_h_y-22, null);
-//            		// 22 la distance giua snow va shadow
-//            		canvas.drawBitmap(snow_shadow, h_x + 12, snow_h_y, null);
-//            	}
             	if (donald.getHp() <= 0) {
             		if (luie[0].getHp() <= 0 && (luie[1].getHp() <= 0) && (luie[2].getHp() <= 0)) {
             			mMode = STATE_WIN;
@@ -972,19 +885,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 		h_hp -= 3;
                 	}
        		    }
-//            		Log.d("Snow y", " =: " + snow_h_y);
-//            		if (snow_h_y == 80)
-//            			m_snow_fire = 0;
-//            	}
-//            	while (snow_h_y > 80);
-//            	canvas.drawBitmap(snow_h, xLeft, yTop, null);
-//            		Paint paint = new Paint();
-//                    for(int ii = 0; ii < 3; ii ++) {
-//                		luie[ii].act(1);
-//                		luie[ii].move();
-//                		canvas.drawBitmap(luie[ii].getBossImage(), luie[ii].getDonaldX(), luie[ii].getDonaldY(), null);
-//                		int enemy_x = luie[ii].getDonaldX();
-//                		int enemy_y = luie[ii].getDonaldY();
                     	if ( (snow_h_x <= (luie[0].getDonaldX() + 20)) && (snow_h_x >= (luie[0].getDonaldX() - 10))) {
                     		if ( (snow_h_y <= (luie[0].getDonaldY() + 30)) && (snow_h_y >= (luie[0].getDonaldY() - 10))) {
                     			luie[0].setHp(luie[0].getHp() - 8);
@@ -1132,10 +1032,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         	int yTop = mCanvasHeight - ((int) h_y + mLanderHeight);
             // bo /2 o fan tren
             int xLeft = ((int) h_x - mLanderWidth / 2) + 20;
-//        	 int yTop =  (int)(h_y);
-             // bo /2 o fan tren
-//             int xLeft = (int) h_x;
-//             Log.d("")
 	             for (int ii = 0; ii <= (yTop/20); ii ++)
 	             {
 //		            yTop -= 5;
