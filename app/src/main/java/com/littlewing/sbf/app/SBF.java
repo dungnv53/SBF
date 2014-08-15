@@ -58,8 +58,7 @@ public class SBF extends Activity {
             mSBFThread.doStart();
             return true;
         case MENU_STOP:
-            mSBFThread.setState(SBFThread.STATE_LOSE,
-                    getText(R.string.message_stopped));
+            mSBFThread.setState(SBFThread.STATE_LOSE, getText(R.string.message_stopped));
             return true;
         case MENU_PAUSE:
             mSBFThread.pause();
@@ -100,16 +99,6 @@ public class SBF extends Activity {
             mSBFThread.restoreState(savedInstanceState);
             Log.w(this.getClass().getName(), "SIS is nonnull");
         }
-        
-    //	DacMedia media = new DacMedia();
-    //	try {
-    //		Log.d("try sound", "cooooooooooooolllllllllllll");
-    //		media.onCreate(savedInstanceState);
-    //		media.playLocalAudio_UsingDescriptor();
-    //	} catch (Exception e) {
-    //		// TODO Auto-generated catch block
-    //		e.printStackTrace();
-    //	}
     }
 
     /**
