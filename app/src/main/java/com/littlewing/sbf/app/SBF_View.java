@@ -618,7 +618,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                     		mHeroIndex = 3;
                     	if(mHeroIndex == 1)
                     		mHeroIndex = 3;
-                    	m_snow_fire = 10;	// De cho snow bay
+                    	m_snow_fire = 10;	// De cho snow bay TODO magick nunb need remove
 
 //                    	make_attack()
                     	// pause 1 chut ko thi cha thay gi ngoai index = 1
@@ -1070,7 +1070,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 		h_hp -= 3;
                 	}
        		    }
-//            		Log.d("snow wwwwwwwwwwwwwww ", snow_h_x + "     " + snow_h_y);
 //            		Log.d("Snow y", " =: " + snow_h_y);
 //            		if (snow_h_y == 80)
 //            			m_snow_fire = 0;
@@ -1352,46 +1351,9 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE:
                     if (h_x > 13 && x < 360) { // tap on left side
-                        h_x -= 12;
-                        m_snow_fire = 10;
-//                        	Log.d("PAD LEFT ", " hero x --------: " + h_x + " hero y ^^^^^" + h_y);
-                        if(mHeroIndex < 2)
-                            mHeroIndex ++;
-                        else
-                        {
-                            mHeroIndex = 0;
-                            mHeroIndex ++;
-                        }
-                        if (mHeroIndex == 2)
-                            mHeroIndex = 0;
-                        else if (mHeroIndex == 0)
-                            mHeroIndex = 1;
-                        Log.d("Touch test", " ssssssssssssssssssssssssssad ");
-                        // nen goi ham hero_move()
+                        heroMove(-12);
                     } else if (h_x < (scr_width-x_bound) && x >= 360) { // tap on right side
-                        h_x += 12;
-                        m_snow_fire = 10;
-//                        	Log.d("PAD RIGHT ", " hero x --------: " + h_x + " hero y ^^^^^" + h_y);
-                        if (mHeroIndex < 2)
-                        {
-                            mHeroIndex ++;
-                            if (mHeroIndex == 2)
-                                mHeroIndex = 0;
-                            else if (mHeroIndex == 0)
-                                mHeroIndex = 1;
-                        }
-                        else
-                        {
-                            mHeroIndex = 1;
-                            mHeroIndex ++;
-                            if (mHeroIndex == 2)
-                                mHeroIndex = 0;
-                            else if (mHeroIndex == 0)
-                                mHeroIndex = 1;
-                        }
-
-                        // hero_move(keycode)
-                        //Log.d("Index test", " = " + mHeroIndex);
+                        heroMove(12);
                     }
                     break;
                 case MotionEvent.ACTION_DOWN:
@@ -1405,6 +1367,27 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                     break;
             }
             return true;
+        }
+        public void heroMove(int deltaX) {
+            h_x += deltaX;
+            m_snow_fire = 10;
+            if (mHeroIndex < 2)
+            {
+                mHeroIndex ++;
+                if (mHeroIndex == 2)
+                    mHeroIndex = 0;
+                else if (mHeroIndex == 0)
+                    mHeroIndex = 1;
+            }
+            else
+            {
+                mHeroIndex = 1;
+                mHeroIndex ++;
+                if (mHeroIndex == 2)
+                    mHeroIndex = 0;
+                else if (mHeroIndex == 0)
+                    mHeroIndex = 1;
+            }
         }
 
     }
