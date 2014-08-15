@@ -195,13 +195,14 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 
             // cache handles to our key sprites & other drawables
             mTitleImage = BitmapFactory.decodeResource(res, R.drawable.title_bg_hori);
+            mTitleImage = Bitmap.createScaledBitmap(mTitleImage, scr_width, (int)(scr_height/2), true);
 
             // load background image as a Bitmap instead of a Drawable b/c
             // we don't need to transform it and it's faster to draw this way
             mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.bck01);
 
             allclear = BitmapFactory.decodeResource(res, R.drawable.allclear);
-            allclear = Bitmap.createScaledBitmap(allclear, scr_width, scr_height, true);
+            allclear = Bitmap.createScaledBitmap(allclear, scr_width, (int)(scr_height/2), true);
 
             v = BitmapFactory.decodeResource(res, R.drawable.v);
 
@@ -777,8 +778,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         private void updatePhysics() {
             long now = System.currentTimeMillis();
             if (mLastTime > now) return;
-            double elapsed = (now - mLastTime) / 1000.0;
-            double ddx = 0.0;
             mLastTime = now;                    return;
         }
 
