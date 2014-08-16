@@ -69,9 +69,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         private static final String KEY_X = "h_x";
         private static final String KEY_Y = "h_y";
 
-        /*
-         * Member (state) fields
-         */
         /** The drawable to use as the background of the animation canvas */
         private Bitmap mBackgroundImage;
 
@@ -226,32 +223,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 setState(STATE_RUNNING);
             }
         }
-        /** Draw enemy follow level n STAGE of game */
-        public void draw_enemy(Canvas canvas) {
-        	donald.act(1, scr_width, scr_height);
-        	donald.move();
-        	Paint paint = new Paint();
-        	paint.setStyle(Style.FILL_AND_STROKE);
-        	paint.setColor(Color.RED);
-        	if (donald.getHp() > 0) {
-        	canvas.drawBitmap(donald.getBossImage(), donald.getDonaldX(), 100, null);
-        	canvas.drawRect((float) donald.getDonaldX()-5, 98, (float) donald.getDonaldX(), 140, paint);
-        	}
-        	for(int ii = 0; ii < 3; ii ++) {
-        		luie[ii].act(1, scr_width, scr_height);
-        		luie[ii].move();
 
-            	paint.setStyle(Style.FILL_AND_STROKE);
-            	paint.setColor(Color.RED);
-
-            	luie[ii].setBomb(bomb);
-            	luie[ii].item.dropBomb(luie[ii].getDonaldY(), 3/4*getHeight());
-            	if (luie[ii].getHp() > 0) {
-            		canvas.drawBitmap(luie[ii].getBossImage(), luie[ii].getDonaldX(), luie[ii].getDonaldY(), null);
-            	}
-        	}
-
-        }
         public int get_random(int paramInt) {
         	int i = this.rnd.nextInt() % paramInt;
     	    return (i < 0) ? -i : i;
@@ -318,10 +290,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             }
             return map;
         }
-        public void setFiring(boolean firing) {
-            synchronized (mSurfaceHolder) {
-            }
-        }
+
         public void setRunning(boolean b) {
             mRun = b;
         }
@@ -378,8 +347,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                         str = message + "\n" + str;
                     }
 
-                    if (mMode == STATE_LOSE)
-                    {
+                    if (mMode == STATE_LOSE) {
                     	str = "\n\n" + "You lose!" + "\n Good job!";
                     }
 
@@ -425,7 +393,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
          */
         boolean doKeyDown(int keyCode, KeyEvent msg, MotionEvent mtEvent) {
             synchronized (mSurfaceHolder) {
-
                 boolean okStart = true;
                 if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_O || keyCode == KeyEvent.KEYCODE_S)
                 	okStart  = true;
@@ -653,7 +620,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             	canvas.restore();
             } else  if(mMode == STATE_WIN) {
             	// dat 1 gia tri canh de play only 1 loop; TODO no magick numb
-            	//win_sound_flag++; if(win_sound_flag ==1) { mpx.start(); } else { stopSound(); };
+            	//win_sound_flag++; if(win_sound_flag ==1) { playTitleSound(); } else { stopSound(); };
 
             	String text = "Victory !... \n";
             	Paint p = new Paint();
@@ -840,7 +807,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         thread = new SBFThread(holder, context, new Handler() {
             @Override
             public void handleMessage(Message m) {
-//                mStatusText.setVisibility(m.getData().getInt("viz"));
                 mStatusText.setText(m.getData().getString("text"));
             }
         });
@@ -851,10 +817,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 			e.printStackTrace();
 		}
         setFocusable(true); // make sure we get key events
-
-//      SoundManager sm = new SoundManager(context);
-//    	sm.addSound(0, R.raw.explosion);
-//    	sm.playSound(0);
 
     	mpx = MediaPlayer.create(context, R.raw.night);
     	mpx.start();
