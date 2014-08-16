@@ -568,9 +568,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 //            	make_attack(canvas);
             	int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
              	snow_h_y -= 12;
-        		if (snow_h_y < 25) snow_h_y = (scr_height-y_bound);
-//        		canvas.drawBitmap(snow_h, snow_h_x, snow_h_y-22, null);
-        		int rand_img = get_random(4);
+        		if (snow_h_y < h_y) snow_h_y = (scr_height-y_bound);
         		canvas.drawBitmap(bomb.getImage(2), h_x + 22, snow_h_y-22, null); // 22 la distance giua snow va shadow
         		canvas.drawBitmap(snow_shadow, h_x + 22, snow_h_y, null);
 
@@ -744,10 +742,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         }
         /**
          * Them ham boss_attack() voi random target, sound play
-         * test hp ... va vi tri nem
-         * ko run co le do chi dc goi 1 lan
-         * Neu dat vao ham run() chay chung voi doDraw() thi lam game speed nhanh gap co 2x
-         * -> tam thoi cho chay trong ham doDraw()
          */
         public void boss_attack(Canvas canvas) {
         	int width = getWidth();     // game screen width
@@ -784,9 +778,9 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE:
                     if (h_x > 13 && x < h_x) { // tap on left side
-                        heroMove(-12);
+                        heroMove(-12, x, y);
                     } else if (h_x < (scr_width-x_bound) && x >= h_x) { // tap on right side
-                        heroMove(12);
+                        heroMove(12, x, y);
                     }
                     break;
                 case MotionEvent.ACTION_DOWN:
@@ -800,9 +794,13 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             }
             return true;
         }
-        public void heroMove(int deltaX) {
-            h_x += deltaX;
-            m_snow_fire = 10;
+        public void heroMove(int deltaX, int x, int y) {
+            if(y < scr_height*3/4)  h_x += deltaX; // Not fire event
+            if(x < scr_width && (x > scr_width*3/4)) {      // check fire button is touched
+                if(y < scr_height && (y > scr_height *3/4)) {
+                    m_snow_fire = 10;
+                }
+            }
             if (mHeroIndex < 2) {
                 mHeroIndex ++;
                 if (mHeroIndex == 2)  mHeroIndex = 0;
