@@ -24,11 +24,20 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.widget.TextView;
 
 
 class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
+	/**
+	 * View that draws, takes keystrokes, etc. for a simple LL game.
+	 *
+	 * Has a mode which RUNNING, PAUSED, etc. Has a x, y, dx, dy, ... capturing the
+	 * current ship physics. All x/y etc. are measured with (0,0) at the lower left.
+	 * updatePhysics() advances the physics based on realtime.
+	 *  draw() renders the
+	 * ship, and does an invalidate() to prompt another draw() as soon as possible
+	 * by the system.
+	 */
      class SBFThread extends Thread {
     	private Bitmap[] mHeroMoving = new Bitmap[7];
     	private Bitmap[] mEnemy = new Bitmap[5];
@@ -43,7 +52,11 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
     	private Bitmap img_sp1;
     	private Bitmap img_sp2;
     	private Bitmap img_sp3;
-
+    	/**
+    	 * dung luu 3 kieu spec tuy vao mana
+    	 * Dung ra fai dung RMS nhung o day tam test cai int nay da.
+    	 *
+    	 */
     	private int use_special = 0;	// integer for store 3 type of special follow the mana degree
     	Resources mRes;
 
@@ -66,6 +79,10 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
          * Current height of the surface/canvas.
          */
         private int mCanvasHeight = 1;
+
+        /**
+         * Current width of the surface/canvas.
+         */
         private int mCanvasWidth = 1;
 
         /** Message handler used by thread to interact with TextView */
@@ -208,14 +225,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 mLastTime = System.currentTimeMillis() + 100;
                 setState(STATE_RUNNING);
             }
-        }
-
-        public Paint newPaint(Color clr, Style stl, int txtSize) {  // Ham nay de cho gon code moi khi goi new Paint()
-            Paint paint = new Paint();
-            if(stl != null) { paint.setStyle(stl); }
-            if(txtSize > 0) { paint.setTextSize(35); }
-            if(clr != null) { paint.setColor(Color.RED); }
-            return paint;
         }
         /** Draw enemy follow level n STAGE of game */
         public void draw_enemy(Canvas canvas) {
@@ -388,6 +397,9 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         public void setSurfaceSize(int width, int height) {
             // synchronized to make sure these all change atomically
             synchronized (mSurfaceHolder) {
+                mCanvasWidth = width;
+                mCanvasHeight = height;
+
                 // don't forget to resize the background image
                 mBackgroundImage = Bitmap.createScaledBitmap(mBackgroundImage, width, height, true);
             }
@@ -402,6 +414,41 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 mLastTime = System.currentTimeMillis() + 100;
             }
             setState(STATE_RUNNING);
+        }
+
+        /**
+         * Handles a key-down event.
+         *
+         * @param keyCode the key that was pressed
+         * @param msg the original event object
+         * @return true
+         */
+        boolean doKeyDown(int keyCode, KeyEvent msg, MotionEvent mtEvent) {
+            synchronized (mSurfaceHolder) {
+
+                boolean okStart = true;
+                if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_O || keyCode == KeyEvent.KEYCODE_S)
+                	okStart  = true;
+                if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
+                    okStart  = true;
+                if (keyCode == KeyEvent.KEYCODE_S)
+                    okStart  = true;
+
+                if ( (okStart) && (mMode == STATE_READY || mMode == STATE_LOSE || mMode == STATE_WIN) ) {
+                    // ready-to-start -> start
+                    doStart();
+                    return true;
+                } else if (mMode == STATE_PAUSE && okStart) {		// bo && okStart
+                    // paused -> running
+                    unpause();
+                    return true;
+
+                } else if (mMode == STATE_RUNNING) {
+                    // TODO temp rm key event for short code, bye D_PAD :(
+                  } // end mMode = STATE_RUNNING
+
+                return false;
+            }
         }
 
         /* Handles a key-up event. */
@@ -422,6 +469,14 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
             return handled;
+        }
+
+        public void dropBombing(Canvas canvas, int targetX, int targetY) {
+        	do {
+        		canvas.drawBitmap(bomb.getImage(0), targetX, targetY+=5, null);
+//        		Log.d("drop bomb", "in the minarets");
+        	}
+        	while (targetY <= (scr_height-y_bound));
         }
 
         /*
@@ -459,7 +514,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             if ( (h_x <= (huey.getDonaldX() + 8)) && (h_x >= (huey.getDonaldX() - 22))) {
                 if ( (snow_h_y <= (huey.getDonaldY() + 30)) && (snow_h_y >= (huey.getDonaldY() - 10))) {
                     huey.setHp(huey.getHp() - 2);
-                    snow_h_y = scr_height*3/4; // fai set lai snow_y ko thi hp mat lien tuc
+                    snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
                 }
             }
         }
@@ -508,11 +563,14 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             // Draw the speed gauge, with a two-tone effect
             canvas.save();
 
+            int snow_h_x = h_x + 12;   // snow_h_x va y fai ko dc change du xLeft top change
             if (m_snow_fire == 10) {
 //            	make_attack(canvas);
             	int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
              	snow_h_y -= 12;
-        		if (snow_h_y < h_y) snow_h_y = (scr_height-y_bound);
+        		if (snow_h_y < 25) snow_h_y = (scr_height-y_bound);
+//        		canvas.drawBitmap(snow_h, snow_h_x, snow_h_y-22, null);
+        		int rand_img = get_random(4);
         		canvas.drawBitmap(bomb.getImage(2), h_x + 22, snow_h_y-22, null); // 22 la distance giua snow va shadow
         		canvas.drawBitmap(snow_shadow, h_x + 22, snow_h_y, null);
 
@@ -533,7 +591,9 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             // Boss attack
             if (donald.getHp() >= 0) {
                 test_snow_h_y += 6;
-                if (test_snow_h_y >= (scr_height-y_bound)) {test_snow_h_y = 80;}   // biên cho item bay tới.
+                if (test_snow_h_y >= (scr_height-y_bound))    // biên cho item bay tới.
+                        test_snow_h_y = 80;
+
                 canvas.drawBitmap(snow_h, donald.getDonaldX() + get_random1(10), test_snow_h_y-22, null); // 22 la distance giua snow va shadow
                 canvas.drawBitmap(snow_shadow, donald.getDonaldX(), test_snow_h_y, null);
                 if ((h_x + 12) >= donald.getDonaldX() && ((h_x - 12) <= donald.getDonaldX())
@@ -587,13 +647,13 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         		}
             	canvas.drawBitmap(mHeroMoving[6], h_x, h_y, null);
             	String text = "You lose ...";
-            	Paint p = new Paint(Color.RED);
-//            	p.setColor(Color.RED);
+            	Paint p = new Paint();
+            	p.setColor(Color.RED);
             	canvas.drawText(text, h_x - 5, h_y - 40, p);
             	canvas.restore();
             } else  if(mMode == STATE_WIN) {
             	// dat 1 gia tri canh de play only 1 loop; TODO no magick numb
-            	win_sound_flag++; mpx = MediaPlayer.create(mContext, R.raw.sbf_win); if(win_sound_flag ==1) { mpx.start(); } else { stopSound(); };
+            	//win_sound_flag++; if(win_sound_flag ==1) { mpx.start(); } else { stopSound(); };
 
             	String text = "Victory !... \n";
             	Paint p = new Paint();
@@ -684,6 +744,10 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         }
         /**
          * Them ham boss_attack() voi random target, sound play
+         * test hp ... va vi tri nem
+         * ko run co le do chi dc goi 1 lan
+         * Neu dat vao ham run() chay chung voi doDraw() thi lam game speed nhanh gap co 2x
+         * -> tam thoi cho chay trong ham doDraw()
          */
         public void boss_attack(Canvas canvas) {
         	int width = getWidth();     // game screen width
@@ -720,9 +784,9 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE:
                     if (h_x > 13 && x < h_x) { // tap on left side
-                        heroMove(-12, x, y);
+                        heroMove(-12);
                     } else if (h_x < (scr_width-x_bound) && x >= h_x) { // tap on right side
-                        heroMove(12, x, y);
+                        heroMove(12);
                     }
                     break;
                 case MotionEvent.ACTION_DOWN:
@@ -736,13 +800,9 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             }
             return true;
         }
-        public void heroMove(int deltaX, int x, int y) {
-            if(y < scr_height*3/4)  h_x += deltaX; // Not fire event
-            if(x < scr_width && (x > scr_width*3/4)) {      // check fire button is touched
-                if(y < scr_height && (y > scr_height *3/4)) {
-                    m_snow_fire = 10;
-                }
-            }
+        public void heroMove(int deltaX) {
+            h_x += deltaX;
+            m_snow_fire = 10;
             if (mHeroIndex < 2) {
                 mHeroIndex ++;
                 if (mHeroIndex == 2)  mHeroIndex = 0;
@@ -829,6 +889,10 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         return thread;
     }
 
+    public boolean onKeyDown(int keyCode, KeyEvent msg, MotionEvent mtEvent) {
+        return thread.doKeyDown(keyCode, msg, mtEvent);
+    }
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent msg) {
         return thread.doKeyUp(keyCode, msg);
@@ -888,8 +952,8 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 
     public  void playTitleSound(){
     	mpx = MediaPlayer.create(mContext, R.raw.sbf_win);
-        mpx.start();
-        mpx.setLooping(false);
+	    	mpx.start();
+    		mpx.setLooping(false);
     }
     public  void playFiringSound(){
     	mpx = MediaPlayer.create(mContext, R.raw.s_fire);
@@ -905,6 +969,11 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
     		mpx.release();
     		mpx = null;
     	}
+    }
+    public  void clickSound(){
+    	stopSound();
+    	mpx = MediaPlayer.create(mContext, R.raw.five);
+    	mpx.start();
     }
 
     public boolean onTouchEvent(MotionEvent mtEvent) {
