@@ -57,16 +57,14 @@ public class Donald {
 		return this.img_Donald[this.idx];
 	}
 	
-	public int get_random(int paramInt)
-	  {
+	public int get_random(int paramInt) {
 	    int i = this.rnd .nextInt() % paramInt;
 	    if (i < 0)
 	      i = -i;
 	    return i;
-	  }
+	 }
 	
-	 public int get_random1(int paramInt)
-	 {
+	 public int get_random1(int paramInt) {
 		  
 	    int i = this.rnd.nextInt() % paramInt;
 	    if (i == 0)
@@ -126,8 +124,7 @@ public class Donald {
 	    	  else {
 	    		  this.dn_y = 50;
 	    	  }
-	      }
-	      else {
+	      } else {
 	    	  if (this.dn_x > 0 && this.dn_x < (screen_width-w_bound)) {  	// eo ro INHERITE COMMON nen cho luon 160 thay
 	    		  this.dn_x += direction;
 	    	  }

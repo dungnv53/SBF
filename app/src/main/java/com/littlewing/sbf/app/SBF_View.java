@@ -28,16 +28,6 @@ import android.widget.TextView;
 
 
 class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
-	/**
-	 * View that draws, takes keystrokes, etc. for a simple LL game.
-	 *
-	 * Has a mode which RUNNING, PAUSED, etc. Has a x, y, dx, dy, ... capturing the
-	 * current ship physics. All x/y etc. are measured with (0,0) at the lower left.
-	 * updatePhysics() advances the physics based on realtime.
-	 *  draw() renders the
-	 * ship, and does an invalidate() to prompt another draw() as soon as possible
-	 * by the system.
-	 */
      class SBFThread extends Thread {
     	private Bitmap[] mHeroMoving = new Bitmap[7];
     	private Bitmap[] mEnemy = new Bitmap[5];
@@ -52,11 +42,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
     	private Bitmap img_sp1;
     	private Bitmap img_sp2;
     	private Bitmap img_sp3;
-    	/**
-    	 * dung luu 3 kieu spec tuy vao mana
-    	 * Dung ra fai dung RMS nhung o day tam test cai int nay da.
-    	 *
-    	 */
+
     	private int use_special = 0;	// integer for store 3 type of special follow the mana degree
     	Resources mRes;
 
@@ -79,10 +65,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
          * Current height of the surface/canvas.
          */
         private int mCanvasHeight = 1;
-
-        /**
-         * Current width of the surface/canvas.
-         */
         private int mCanvasWidth = 1;
 
         /** Message handler used by thread to interact with TextView */
@@ -397,9 +379,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         public void setSurfaceSize(int width, int height) {
             // synchronized to make sure these all change atomically
             synchronized (mSurfaceHolder) {
-                mCanvasWidth = width;
-                mCanvasHeight = height;
-
                 // don't forget to resize the background image
                 mBackgroundImage = Bitmap.createScaledBitmap(mBackgroundImage, width, height, true);
             }
@@ -471,14 +450,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             return handled;
         }
 
-        public void dropBombing(Canvas canvas, int targetX, int targetY) {
-        	do {
-        		canvas.drawBitmap(bomb.getImage(0), targetX, targetY+=5, null);
-//        		Log.d("drop bomb", "in the minarets");
-        	}
-        	while (targetY <= (scr_height-y_bound));
-        }
-
         /*
          * Check hero fire hit enemy, enemy lose hp. fire_step is snow in grid to check hit target.
          * hp_lose is value of hp lose if hero fire hit.
@@ -514,7 +485,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             if ( (h_x <= (huey.getDonaldX() + 8)) && (h_x >= (huey.getDonaldX() - 22))) {
                 if ( (snow_h_y <= (huey.getDonaldY() + 30)) && (snow_h_y >= (huey.getDonaldY() - 10))) {
                     huey.setHp(huey.getHp() - 2);
-                    snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
+                    snow_h_y = scr_height*3/4; // fai set lai snow_y ko thi hp mat lien tuc
                 }
             }
         }
@@ -563,7 +534,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             // Draw the speed gauge, with a two-tone effect
             canvas.save();
 
-            int snow_h_x = h_x + 12;   // snow_h_x va y fai ko dc change du xLeft top change
             if (m_snow_fire == 10) {
 //            	make_attack(canvas);
             	int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
@@ -651,7 +621,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             	canvas.restore();
             } else  if(mMode == STATE_WIN) {
             	// dat 1 gia tri canh de play only 1 loop; TODO no magick numb
-            	//win_sound_flag++; if(win_sound_flag ==1) { mpx.start(); } else { stopSound(); };
+            	win_sound_flag++; mpx = MediaPlayer.create(mContext, R.raw.sbf_win); if(win_sound_flag ==1) { mpx.start(); } else { stopSound(); };
 
             	String text = "Victory !... \n";
             	Paint p = new Paint();
@@ -887,10 +857,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         return thread;
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent msg, MotionEvent mtEvent) {
-        return thread.doKeyDown(keyCode, msg, mtEvent);
-    }
-
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent msg) {
         return thread.doKeyUp(keyCode, msg);
@@ -950,8 +916,8 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 
     public  void playTitleSound(){
     	mpx = MediaPlayer.create(mContext, R.raw.sbf_win);
-	    	mpx.start();
-    		mpx.setLooping(false);
+        mpx.start();
+        mpx.setLooping(false);
     }
     public  void playFiringSound(){
     	mpx = MediaPlayer.create(mContext, R.raw.s_fire);
@@ -967,11 +933,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
     		mpx.release();
     		mpx = null;
     	}
-    }
-    public  void clickSound(){
-    	stopSound();
-    	mpx = MediaPlayer.create(mContext, R.raw.five);
-    	mpx.start();
     }
 
     public boolean onTouchEvent(MotionEvent mtEvent) {
