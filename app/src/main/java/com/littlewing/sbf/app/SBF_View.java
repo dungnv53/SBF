@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.widget.TextView;
 
 
@@ -207,6 +208,14 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 mLastTime = System.currentTimeMillis() + 100;
                 setState(STATE_RUNNING);
             }
+        }
+
+        public Paint newPaint(Color clr, Style stl, int txtSize) {  // Ham nay de cho gon code moi khi goi new Paint()
+            Paint paint = new Paint();
+            if(stl != null) { paint.setStyle(stl); }
+            if(txtSize > 0) { paint.setTextSize(35); }
+            if(clr != null) { paint.setColor(Color.RED); }
+            return paint;
         }
         /** Draw enemy follow level n STAGE of game */
         public void draw_enemy(Canvas canvas) {
@@ -395,41 +404,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             setState(STATE_RUNNING);
         }
 
-        /**
-         * Handles a key-down event.
-         *
-         * @param keyCode the key that was pressed
-         * @param msg the original event object
-         * @return true
-         */
-        boolean doKeyDown(int keyCode, KeyEvent msg, MotionEvent mtEvent) {
-            synchronized (mSurfaceHolder) {
-
-                boolean okStart = true;
-                if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_O || keyCode == KeyEvent.KEYCODE_S)
-                	okStart  = true;
-                if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
-                    okStart  = true;
-                if (keyCode == KeyEvent.KEYCODE_S)
-                    okStart  = true;
-
-                if ( (okStart) && (mMode == STATE_READY || mMode == STATE_LOSE || mMode == STATE_WIN) ) {
-                    // ready-to-start -> start
-                    doStart();
-                    return true;
-                } else if (mMode == STATE_PAUSE && okStart) {		// bo && okStart
-                    // paused -> running
-                    unpause();
-                    return true;
-
-                } else if (mMode == STATE_RUNNING) {
-                    // TODO temp rm key event for short code, bye D_PAD :(
-                  } // end mMode = STATE_RUNNING
-
-                return false;
-            }
-        }
-
         /* Handles a key-up event. */
         boolean doKeyUp(int keyCode, KeyEvent msg) {
             boolean handled = false;
@@ -559,9 +533,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             // Boss attack
             if (donald.getHp() >= 0) {
                 test_snow_h_y += 6;
-                if (test_snow_h_y >= (scr_height-y_bound))    // biên cho item bay tới.
-                        test_snow_h_y = 80;
-
+                if (test_snow_h_y >= (scr_height-y_bound)) {test_snow_h_y = 80;}   // biên cho item bay tới.
                 canvas.drawBitmap(snow_h, donald.getDonaldX() + get_random1(10), test_snow_h_y-22, null); // 22 la distance giua snow va shadow
                 canvas.drawBitmap(snow_shadow, donald.getDonaldX(), test_snow_h_y, null);
                 if ((h_x + 12) >= donald.getDonaldX() && ((h_x - 12) <= donald.getDonaldX())
@@ -615,8 +587,8 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         		}
             	canvas.drawBitmap(mHeroMoving[6], h_x, h_y, null);
             	String text = "You lose ...";
-            	Paint p = new Paint();
-            	p.setColor(Color.RED);
+            	Paint p = new Paint(Color.RED);
+//            	p.setColor(Color.RED);
             	canvas.drawText(text, h_x - 5, h_y - 40, p);
             	canvas.restore();
             } else  if(mMode == STATE_WIN) {
