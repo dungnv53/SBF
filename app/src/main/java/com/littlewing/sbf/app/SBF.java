@@ -55,19 +55,19 @@ public class SBF extends Activity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
-        case MENU_START:
-            mSBFThread.doStart();
-            return true;
-        case MENU_STOP:
-            mSBFThread.setState(SBFThread.STATE_LOSE, getText(R.string.message_stopped));
-            return true;
-        case MENU_PAUSE:
-            mSBFThread.pause();
-            return true;
-        case MENU_RESUME:
-            mSBFThread.unpause();
-            return true;
+        switch (item.getItemId()) {
+            case MENU_START:
+                mSBFThread.doStart();
+                return true;
+            case MENU_STOP:
+                mSBFThread.setState(SBFThread.STATE_LOSE, getText(R.string.message_stopped));
+                return true;
+            case MENU_PAUSE:
+                mSBFThread.pause();
+                return true;
+            case MENU_RESUME:
+                mSBFThread.unpause();
+                return true;
       }
         return false;
     }
