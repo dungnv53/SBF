@@ -2,6 +2,8 @@ package com.littlewing.sbf.app;
 
 import com.littlewing.sbf.app.SBF_View.SBFThread;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;

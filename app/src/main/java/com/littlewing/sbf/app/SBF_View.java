@@ -418,14 +418,6 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
             return handled;
         }
 
-        public void dropBombing(Canvas canvas, int targetX, int targetY) {
-        	do {
-        		canvas.drawBitmap(bomb.getImage(0), targetX, targetY+=5, null);
-//        		Log.d("drop bomb", "in the minarets");
-        	}
-        	while (targetY <= (scr_height-y_bound));
-        }
-
         /*
          * Check hero fire hit enemy, enemy lose hp. fire_step is snow in grid to check hit target.
          * hp_lose is value of hp lose if hero fire hit.
