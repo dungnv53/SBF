@@ -18,7 +18,7 @@
         </activity>
         <activity
             android:name=".SBF"
-            android:label="@string/village">
+            android:label="@string/sbf">
         </activity>
     </application>
 
