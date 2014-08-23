@@ -16,6 +16,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
+import android.util.Log;
 
 /**
  * Created by nickfarrow on 8/21/14.
@@ -27,6 +28,8 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
     public static final int NORTHEN_BOY = 4;
     public static final int ITEM_SHOP = 5;
     public static final int DRUG_STORE = 6;
+
+    Paint p;
 
     class VilThread extends Thread {
         private Bitmap[] mHeroMoving = new Bitmap[7];
@@ -96,12 +99,13 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
 
         @Override
         public void run() {
-            while (mRun) {
+//            while (mRun) {
                 Canvas c = null;
                 try {
                     c = mSurfaceHolder.lockCanvas(null);
                     synchronized (mSurfaceHolder) {
 //                            if (mMode == )  updatePhysics(); doDraw(c);
+                        doDraw(c);
 //                        boss_attack(c);
                     }
                 } finally {
@@ -111,7 +115,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                     if (c != null) {
                         mSurfaceHolder.unlockCanvasAndPost(c);
                     }
-                }  // hay bi thread end
+                //}  // hay bi thread end
             }
         }
 
@@ -139,7 +143,9 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
 
         public void doDraw(Canvas canvas) {
             canvas.drawBitmap(heroImg, 200, 200, null);
-            if(mMode == WESTERN_BOY) {
+            Log.d("in ", " draw");
+
+//            if(mMode == WESTERN_BOY) {
                 canvas.drawBitmap(mHeroMoving[6], h_x, h_y, null);
                 String text = "You lose ...";
                 Paint p = new Paint();
@@ -147,7 +153,8 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                 canvas.drawText(text, h_x - 5, h_y - 40, p);
                 canvas.save();
                 canvas.restore();
-            } else  if(mMode == SOUTHERN_BOY) {
+//            } else
+                if(mMode == SOUTHERN_BOY) {
 
             } else if (mMode == EASTERN_BOY) {
                 canvas.save();
@@ -160,6 +167,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
         public boolean onTouch(MotionEvent event) {
             int x = (int)event.getX();
             int y = (int)event.getY();
+            Log.d("x= ", x + " touch event");
             switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE:
                     if (h_x > 13 && x < h_x) { // tap on left side
@@ -190,6 +198,22 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                 mHeroIndex ++;
                 if (mHeroIndex == 2)  mHeroIndex = 0;
                 else if (mHeroIndex == 0)  mHeroIndex = 1;
+            }
+        }
+
+        public Bundle saveState(Bundle map) {
+            synchronized (mSurfaceHolder) {
+                if (map != null) {
+                    Log.d("in", " save state");
+                }
+            }
+            return map;
+        }
+
+        public  void doStart() {
+            Log.d("in do ", " start");
+            synchronized (mSurfaceHolder) {
+                Log.d("in do ", " start");
             }
         }
 
@@ -257,9 +281,11 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
         return thread;
     }
 
+    @Override
     public boolean onTouchEvent(MotionEvent mtEvent) {
         return thread.onTouch(mtEvent);
     }
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
         // start the thread here so that we don't busy-wait in run()
         // waiting for the surface to be created
@@ -270,5 +296,13 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceDestroyed(SurfaceHolder holder) {
         // we have to tell thread to shut down & wait for it to finish, or else
         // it might touch the Surface after we return and explode
+    }
+    @Override
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        p=new Paint();
+        Bitmap b=BitmapFactory.decodeResource(getResources(), R.drawable.hero_icon3);
+        p.setColor(Color.RED);
+        canvas.drawBitmap(b, 200, 200, p);
     }
 }

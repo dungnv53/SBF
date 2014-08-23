@@ -569,16 +569,15 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
         		mpx = MediaPlayer.create(mContext, R.raw.s_lose);
         		if (lose_flag_sound  == 1) {
         			mpx.start();
-        		}
-        		else {
-        			mpx.stop();
+        		} else {
+        			if(mpx != null) mpx.stop();
         		}
             	canvas.drawBitmap(mHeroMoving[6], h_x, h_y, null);
             	String text = "You lose ...";
             	Paint p = new Paint();
             	p.setColor(Color.RED);
             	canvas.drawText(text, h_x - 5, h_y - 40, p);
-            	canvas.restore();
+//            	canvas.restore();
             } else  if(mMode == STATE_WIN) {
             	win_sound_flag++; if(win_sound_flag ==1) { mpx.start(); } else { stopSound(); };
 

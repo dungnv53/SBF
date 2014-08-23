@@ -61,7 +61,10 @@ public class SBF extends Activity {
                 return true;
             case MENU_STOP:
                 mSBFThread.setState(SBFThread.STATE_LOSE, getText(R.string.message_stopped));
-                return true;
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             case MENU_PAUSE:
                 mSBFThread.pause();
                 return true;
