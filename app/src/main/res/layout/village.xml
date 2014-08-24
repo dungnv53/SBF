@@ -1,44 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/village"
-    android:weightSum="1">
-
-    <!--<ImageView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="432dp"-->
-        <!--android:id="@+id/imageView3"-->
-        <!--android:src="@drawable/village2" />-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <com.littlewing.sbf.app.Village_View
-        android:id="@+id/villageView"
+        android:id="@+id/vil"
         android:layout_width="match_parent"
-        android:layout_height="319dp"
-        android:layout_weight="1.27" />
+        android:layout_height="match_parent"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="66dp" >
+        android:layout_height="match_parent" >
 
         <TextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="52dp"
             android:gravity="center_horizontal"
             android:text="@string/sbf_layout_text_text"
             android:textColor="#ffffff22"
             android:textSize="24sp"
-            android:visibility="visible"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:visibility="visible" />
 
     </RelativeLayout>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New game"
-        android:id="@+id/button1"
-        android:layout_gravity="center_horizontal" />
-</LinearLayout>
+
+</FrameLayout>

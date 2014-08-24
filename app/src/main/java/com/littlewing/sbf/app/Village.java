@@ -1,48 +1,38 @@
 package com.littlewing.sbf.app;
 
-import android.app.Activity;
+import com.littlewing.sbf.app.Village_View.VillageThread;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.AbsoluteLayout;
-import android.widget.Button;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.graphics.Canvas;
-import android.widget.Gallery;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import java.util.Random;
-
-/**
- * Created by dungnv on 8/18/14.
- */
-public class Village  extends Activity{
-    Button button;
-    private Bitmap ville;
-
-    private Village_View vileView;
-    private Village_View.VilThread vileThread;
-
-    private Village_View SBF_View;
-    private SBF_View.SBFThread villeThread;
+public class Village extends Activity {
 
     private static final int MENU_PAUSE = 4;
+
     private static final int MENU_RESUME = 5;
+
     private static final int MENU_START = 6;
+
     private static final int MENU_STOP = 7;
 
-    LinearLayout mLinearLayout;
+    /** A handle to the thread that's actually running the animation. */
+    private VillageThread mVillageThread;
 
+    /** A handle to the View in which the game is running. */
+    private Village_View mVillage_View;
+
+    /**
+     * Invoked during init to give the Activity a chance to set up its Menu.
+     *
+     * @param menu the Menu to which entries may be added
+     * @return true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -67,74 +57,75 @@ public class Village  extends Activity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_START:
-                vileThread.doStart();
+                mVillageThread.doStart();
                 return true;
             case MENU_STOP:
-                Log.d("in", "stop");
+                mVillageThread.setState(VillageThread.STATE_LOSE, getText(R.string.message_stopped));
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_HOME);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-                return true;
             case MENU_PAUSE:
+                mVillageThread.pause();
                 return true;
             case MENU_RESUME:
+                mVillageThread.unpause();
                 return true;
         }
         return false;
     }
 
+    /**
+     * Invoked when the Activity is created.
+     *
+     * @param savedInstanceState a Bundle containing state saved from a previous
+     *        execution, or null if this is a new execution
+     */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLinearLayout = new LinearLayout(this);
 
+        // tell system to use the layout defined in our XML file
         setContentView(R.layout.village);
-        addListenerOnButton();
 
-//        mSBFThread = mSBF_View.getThread();
+        // get handles to the Village_View from XML, and its VillageThread
+        mVillage_View = (Village_View) findViewById(R.id.vil);
+        mVillageThread = mVillage_View.getThread();
 
-        vileView = (Village_View) findViewById(R.id.villageView);
-        vileThread = vileView.getThread();
-        CharSequence text = "Hello toast!";
-        int duration = Toast.LENGTH_SHORT;
+        // give the Village_View a handle to the TextView used for messages
+        mVillage_View.setTextView((TextView) findViewById(R.id.text));
 
-        Context context = getApplicationContext();
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-
-        ville = Bitmap.createBitmap(720, 720, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(ville);
-        vileThread.doDraw(canvas);
-
-//        villeThread.doStart();
+        if (savedInstanceState == null) {
+            // we were just launched: set up a new game
+            mVillageThread.setState(VillageThread.STATE_READY);
+            Log.w(this.getClass().getName(), "SIS is null");
+        } else {
+            // we are being restored: resume a previous game
+            mVillageThread.restoreState(savedInstanceState);
+            Log.w(this.getClass().getName(), "SIS is nonnull");
+        }
     }
 
-    public void addListenerOnButton() {
-
-        final Context context = this;
-
-        button = (Button) findViewById(R.id.button1);
-
-        button.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                Intent intent = new Intent(context, SBF.class);
-                startActivity(intent);
-
-            }
-
-        });
-
+    /**
+     * Invoked when the Activity loses user focus.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mVillage_View.getThread().pause(); // pause game when Activity pauses
     }
+
+    /**
+     * Notification that something is about to happen, to give the Activity a
+     * chance to save state.
+     *
+     * @param outState a Bundle into which this Activity should save its state
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // just have the View's thread save its state into our Bundle
         super.onSaveInstanceState(outState);
-        vileThread.saveState(outState);
+        mVillageThread.saveState(outState);
         Log.w(this.getClass().getName(), "SIS called");
     }
-
 }
