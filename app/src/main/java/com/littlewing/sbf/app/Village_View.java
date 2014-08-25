@@ -198,7 +198,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
 
             // load background image as a Bitmap instead of a Drawable b/c
             // we don't need to transform it and it's faster to draw this way
-            mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.bck01);
+            mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.village2);
 
             allclear = BitmapFactory.decodeResource(res, R.drawable.allclear);
             allclear = Bitmap.createScaledBitmap(allclear, scr_width, (int)(scr_height/2), true);
@@ -708,9 +708,9 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE:
                     if (h_x > 13 && x < h_x) { // tap on left side
-                        heroMove(-12, x, y);
+                        heroMove(-12, 12, x, y);
                     } else if (h_x < (scr_width-x_bound) && x >= h_x) { // tap on right side
-                        heroMove(12, x, y);
+                        heroMove(12, 12, x, y);
                     }
                     break;
                 case MotionEvent.ACTION_DOWN:
@@ -724,8 +724,11 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
             }
             return true;
         }
-        public void heroMove(int deltaX, int x, int y) {
-            if(y < scr_height*3/4) { h_x += deltaX; }
+        public void heroMove(int deltaX, int deltaY, int x, int y) {
+            if(y < scr_height*3/4) { h_x += deltaX;
+                if(y < (h_y-82)) { h_y -= deltaY; } else if(y >= (h_y+82)) { h_y += deltaY; } // 82 is border for hero area
+                // TODO set boundary by screen W-H ratio
+                }
             if(x < scr_width && (x > scr_width*3/4)) {
                 if(y < scr_height && (y > scr_height*3/4)) { m_snow_fire = 10; }
             }
