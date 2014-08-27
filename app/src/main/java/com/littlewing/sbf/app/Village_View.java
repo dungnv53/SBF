@@ -372,7 +372,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                 canvas.drawBitmap(mHeroMoving[5], (scr_width/2-x_bound), (scr_height/2-y_bound), null);
                 canvas.drawBitmap(v, (scr_width/2-x_bound+18), (scr_height/2-y_bound-22), null);
                 canvas.drawText(text, (scr_width/2-x_bound), (scr_height/2 - 20), p);
-                String text2 = "Acquired 32 golds.";
+                String text2 = "Southern Boys challenged you!!";
                 canvas.drawText(text2, (scr_width/2-x_bound), (scr_height/2), p);
                 canvas.save();
 //            	canvas.restore();
