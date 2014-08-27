@@ -63,16 +63,6 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
         /** The drawable to use as the background of the animation canvas */
         private Bitmap mBackgroundImage;
 
-        /**
-         * Current height of the surface/canvas.
-         */
-        private int mCanvasHeight = 1;
-
-        /**
-         * Current width of the surface/canvas.
-         */
-        private int mCanvasWidth = 1;
-
         /** Message handler used by thread to interact with TextView */
         private  Handler mHandler;
 
@@ -106,21 +96,10 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
         private  int h_y = 600; //(scr_height/2-y_bound);   // vị trí dưới của hero (player).
 
         private int mHeroIndex = 0;
-        private int m_snow_fire = 0;
-        private int e_snow_fired = 0;
 
-        int snow_h_y = (scr_height-y_bound);
-        int h_hp = 84; // hp cua hero
         private Random rnd = new Random();
 
         public static final int GAME_THREAD_DELAY = 600;
-        /**
-         * Mang donald luie
-         */
-        private Donald[] luie = new Donald[3];
-        Bomb bomb;
-        // Vi tri bat dau nem cua boss.
-        private int test_snow_h_y = (scr_height-y_bound);
 
         private Bitmap allclear;
 
@@ -324,9 +303,6 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
         public void setSurfaceSize(int width, int height) {
             // synchronized to make sure these all change atomically
             synchronized (mSurfaceHolder) {
-                mCanvasWidth = width;
-                mCanvasHeight = height;
-
                 // don't forget to resize the background image
                 mBackgroundImage = Bitmap.createScaledBitmap(mBackgroundImage, width, height, true);
             }
@@ -446,9 +422,6 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                 if(y < (h_y-82)) { h_y -= deltaY; } else if(y >= (h_y+82)) { h_y += deltaY; } // 82 is border for hero area
                 // TODO set boundary by screen W-H ratio
                 }
-            if(x < scr_width && (x > scr_width*3/4)) {
-                if(y < scr_height && (y > scr_height*3/4)) { m_snow_fire = 10; }
-            }
             if (mHeroIndex < 2) {
                 mHeroIndex ++;
                 if (mHeroIndex == 2)  mHeroIndex = 0;
