@@ -54,6 +54,18 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
         public static final int STATE_RUNNING = 4;
         public static final int STATE_WIN = 5;
 
+        public static final int LEFT = 6;
+        public static final int RIGHT = 7;
+        public static final int UP = 8;
+        public static final int DOWN = 9;
+
+        public static final int DRUG_STORE = 11;
+        public static final int ITEM_SHOP = 12;
+        public static final int EASTERN_BOY = 13;
+        public static final int SOUTHERN_BOY = 14;
+        public static final int WESTERN_BOY = 15;
+        public static final int NORTHERN_BOY = 16;
+
         private static final String KEY_X = "h_x";
         private static final String KEY_Y = "h_y";
 
@@ -400,10 +412,14 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
             int y = (int)event.getY();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE:
-                    if (h_x > 13 && x < h_x) { // tap on left side
-                        heroMove(-12, 12, x, y);
-                    } else if (h_x < (scr_width-x_bound) && x >= h_x) { // tap on right side
-                        heroMove(12, 12, x, y);
+                    if (inRange(x, 200, 150) && inRange(y, 1000, 200)) { // tap on left side
+                        heroMove(12, LEFT);
+                    } else if (inRange(x, 0, 150) && inRange(y, 1000, 200)) { // tap on right side
+                        heroMove(12, RIGHT);
+                    } else if (inRange(x, 100, 180) && inRange(y, 800, 100)) { // up
+                        heroMove(12, UP);
+                    } else if (inRange(x, 100, 180) && inRange(y, 960, 150)) { // down
+                        heroMove(12, DOWN);
                     }
                     break;
                 case MotionEvent.ACTION_DOWN:
@@ -417,11 +433,53 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
             }
             return true;
         }
-        public void heroMove(int deltaX, int deltaY, int x, int y) {
-            if(y < scr_height*3/4) { h_x += deltaX;
-                if(y < (h_y-82)) { h_y -= deltaY; } else if(y >= (h_y+82)) { h_y += deltaY; } // 82 is border for hero area
-                // TODO set boundary by screen W-H ratio
-                }
+        // Move hero by direction and shift_delta
+        public void heroMove(int delta, int dir) {
+            switch(dir) {
+                case LEFT:
+                    if (inRange(h_x, 150, 420) && inRange(h_y, 360, 250)) { // tap on left side
+                        h_x -= delta;
+                    } else {
+                        h_x = 560;
+                    }
+                    break;
+                case RIGHT:
+                    if (inRange(h_x, 150, 420) && inRange(h_y, 360, 250)) { // tap on left side
+                        h_x += delta;
+                    } else {
+                        h_x = 150;
+                    }
+                    break;
+                case UP:
+                    if (inRange(h_x, 150, 420) && inRange(h_y, 360, 250)) { // tap on left side
+                        h_y -= delta;
+                    } else {
+                        h_y = 590;
+                    }
+                    break;
+                case DOWN:
+                    if (inRange(h_x, 150, 420) && inRange(h_y, 360, 250)) { // tap on left side
+                        h_y += delta;
+                    } else {
+                        h_y = 360;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        // Check x is in range from to from+range
+        public boolean inRange(int x, int from, int range) {
+            if((x >= from) && (x <= (from+range))) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        // Simulate hero motion by sprite image
+        public void heroMotion() {
             if (mHeroIndex < 2) {
                 mHeroIndex ++;
                 if (mHeroIndex == 2)  mHeroIndex = 0;
