@@ -56,10 +56,10 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
         public static final int STATE_RUNNING = 4;
         public static final int STATE_WIN = 5;
 
-        public static final int LEFT = 0;
-        public static final int RIGHT = 1;
-        public static final int UP = 2;
-        public static final int DOWN = 3;
+        public static final int LEFT = 6;
+        public static final int RIGHT = 7;
+        public static final int UP = 8;
+        public static final int DOWN = 9;
 
         public static final int DRUG_STORE = 11;
         public static final int ITEM_SHOP = 12;
@@ -462,7 +462,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                     if(inRange(h_x, 150, 410)) {
                         h_x += delta;
                     } else {
-                        h_x = 560;
+                        h_x = 550;
                     }
                     heroMotion();
                     break;
@@ -470,7 +470,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                     if(inRange(h_x, 150, 410)) {
                         h_x -= delta;
                     } else {
-                        h_x = 150;
+                        h_x = 160;
                     }
                     heroMotion();
                     break;
@@ -490,11 +490,12 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                     }
                     heroMotion();
                     break;
-
+                default:
+                    break;
             }
         }
 
-        // Use sprite image to animate hero move
+        // Simulate hero motion by sprite image
         public void heroMotion() {
             if (mHeroIndex < 2) {
                 mHeroIndex++;
