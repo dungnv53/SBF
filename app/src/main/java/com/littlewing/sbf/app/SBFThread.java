@@ -146,6 +146,8 @@ class SBFThread extends Thread {
 
     private SoundPool sp = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
 
+    private SBFGame sbf = new SBFGame();
+
     public SBFThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
         // get handles to some important objects
         mSurfaceHolder = surfaceHolder;
@@ -280,6 +282,11 @@ class SBFThread extends Thread {
                     } else {
                         // TODO
                     }
+                }
+                try{
+                    Thread.sleep(23); // Stune 1 it
+                }catch(InterruptedException e){
+                    System.out.println("got interrupted!");
                 }
             } finally {
                 // do this in a finally so that if an exception is thrown
@@ -450,6 +457,9 @@ class SBFThread extends Thread {
         test_snow_e_y [snow_e_y_idx] += 6;
         if(test_snow_e_y[snow_e_y_idx] >= 205)
             test_snow_e_y[snow_e_y_idx] = 70;
+
+        // TODO cho shadow va snow tach xa dan theo time
+        // them gia toc chut it cho snow bay xa nhanh dan
         cv.drawBitmap(snow_h, huey.getDonaldX(), test_snow_e_y[snow_e_y_idx]-22 + rand_donald_y, null); // 22 la distance giua snow va shadow
         cv.drawBitmap(snow_shadow, huey.getDonaldX(), test_snow_e_y[snow_e_y_idx], null);
 
@@ -592,14 +602,21 @@ class SBFThread extends Thread {
             Paint p = newPaint(Color.RED, null, 35);
             String text2 = "Acquired 32 golds.";
 
+            canvas.save();
+            canvas.drawBitmap(allclear, 0, 30, null);
+            canvas.drawBitmap(mHeroMoving[5], (scr_width/2-x_bound), (scr_height/2-y_bound), null);
+            canvas.drawBitmap(v, (scr_width/2-x_bound+18), (scr_height/2-y_bound-22), null);
+            canvas.drawText(text, (scr_width/2-x_bound), (scr_height/2 - 20), p);
+            canvas.drawText(text2, (scr_width/2-x_bound), (scr_height/2), p);
+
             try {
                 if(canvas != null) {
-                    canvas.save();
-                    canvas.drawBitmap(allclear, 0, 30, null);
-                    canvas.drawBitmap(mHeroMoving[5], (scr_width/2-x_bound), (scr_height/2-y_bound), null);
-                    canvas.drawBitmap(v, (scr_width/2-x_bound+18), (scr_height/2-y_bound-22), null);
-                    canvas.drawText(text, (scr_width/2-x_bound), (scr_height/2 - 20), p);
-                    canvas.drawText(text2, (scr_width/2-x_bound), (scr_height/2), p);
+//                    canvas.save();
+//                    canvas.drawBitmap(allclear, 0, 30, null);
+//                    canvas.drawBitmap(mHeroMoving[5], (scr_width/2-x_bound), (scr_height/2-y_bound), null);
+//                    canvas.drawBitmap(v, (scr_width/2-x_bound+18), (scr_height/2-y_bound-22), null);
+//                    canvas.drawText(text, (scr_width/2-x_bound), (scr_height/2 - 20), p);
+//                    canvas.drawText(text2, (scr_width/2-x_bound), (scr_height/2), p);
                 }
             } catch(NullPointerException e) {
                 Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -725,9 +742,12 @@ class SBFThread extends Thread {
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
                 if (h_x > 13 && x < h_x) { // tap on left side
-                    heroMove(-12, x, y);
+                    // fix me
+                    // do ham ben kia ko change dc value h_x ... nen can cho ham nay vao Donald
+                    // neu Donald co roi thi lam cach nao tao 1 Object thay vi h_x hard code.
+                    sbf.heroMove(-12, x, y, scr_width, scr_height, h_x, m_snow_fire, mHeroIndex);
                 } else if (h_x < (scr_width-x_bound) && x >= h_x) { // tap on right side
-                    heroMove(12, x, y);
+                    sbf.heroMove(12, x, y, scr_width, scr_height, h_x, m_snow_fire, mHeroIndex);
                 }
                 break;
             case MotionEvent.ACTION_DOWN:
@@ -740,22 +760,6 @@ class SBFThread extends Thread {
                 break;
         }
         return true;
-    }
-    public void heroMove(int deltaX, int x, int y) {
-        if(y < scr_height*3/4) { h_x += deltaX; }
-        if(x < scr_width && (x > scr_width*3/4)) {
-            if(y < scr_height && (y > scr_height*3/4)) { m_snow_fire = 10; }
-        }
-        if (mHeroIndex < 2) {
-            mHeroIndex ++;
-            if (mHeroIndex == 2)  mHeroIndex = 0;
-            else if (mHeroIndex == 0)  mHeroIndex = 1;
-        } else {
-            mHeroIndex = 1;
-            mHeroIndex ++;
-            if (mHeroIndex == 2)  mHeroIndex = 0;
-            else if (mHeroIndex == 0)  mHeroIndex = 1;
-        }
     }
 
     public  void stopSound() { // TODO move to soundPool

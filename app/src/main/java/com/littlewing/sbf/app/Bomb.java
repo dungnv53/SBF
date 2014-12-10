@@ -56,6 +56,7 @@ public class Bomb {
         public void setItemIdx(int paramInt) {
         	this.b_idx = paramInt;
         }
+
         public void dropBomb(int paramInt1, int paramInt2) {
         	while (this.bom_y < paramInt2)
         	{
@@ -66,13 +67,21 @@ public class Bomb {
         				this.destroyed = true;
         	} // ; cug dc ma ko cung dc, y?
         }
+
         public Bitmap getImage(int i) { // chua cho id
         	if(i < 5 && i >= 0)
         		return this.bom_pic[i];
         	else
         		return this.bom_pic[0];
         }
+
         public void setImage(Bitmap[] paramBitmap) {
         	this.bom_pic = paramBitmap;
+        }
+
+        // item fly toward
+        // TODO need Point target, from, speed, destroy item when out
+        public void throwing() {
+
         }
     }

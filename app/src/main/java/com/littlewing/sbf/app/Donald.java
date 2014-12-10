@@ -14,6 +14,8 @@ public class Donald {
 	private int hp = 56;
 	private int max_hp = 56;
 	private int idx;
+
+    private int state; // nhan vat dinh effect
 	
 	private int e_boss_move_dir = 10;
 	private int e_boss_x = 0;

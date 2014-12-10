@@ -1,34 +1,18 @@
 package com.littlewing.sbf.app;
 
-import java.util.Random;
-
-
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.TextView;
 
 
 class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
-
 
     private  Context mContext;
 
@@ -40,7 +24,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 
 
 	private MediaPlayer mpx;
-    private int mViewWidth = getWidth();
+    private int mViewWidth = getWidth(); // TODO move to Surface like class
     private int mViewHeight = getHeight();
 
     public SBF_View(Context context, AttributeSet attrs) {
