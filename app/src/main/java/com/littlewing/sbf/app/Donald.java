@@ -22,7 +22,10 @@ public class Donald {
 	Random rnd = new Random();
 	Bomb item = new Bomb (dn_x, dn_y + 20);
 	
-	
+	public void Donald(int x, int y) {
+        this.dn_x = x;
+        this.dn_y = y;
+    }
 	private Bitmap[] img_Donald = new Bitmap[4];      // Mảng 4 images cho enery hay hero (player). 4 ảnh này tạo nên hình sprites di chuyển.
 	
 	public int getHp() {
@@ -75,10 +78,10 @@ public class Donald {
 	 }
 	 
 	 // Đặt id cho ảnh sprite của nhân vật. 4 ảnh của nhân vật ghép thành ảnh động qua 4 id.
-	 public void set_idx(int paramInt) {
+	 public void setIdx(int paramInt) {
 		 this.idx = paramInt;
 	 }
-	 public int get_idx() {
+	 public int getIdx() {
 		 return this.idx;
 	 }
 	 

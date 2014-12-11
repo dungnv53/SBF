@@ -111,8 +111,11 @@ class SBFThread extends Thread {
     private int x_bound = scr_width/12;        // biên ngang cho màn hình game
     private int y_bound = scr_height/8;        // biên trên dưới cho màn hình game.
 
-    private  int h_x = (scr_width/2) - x_bound; // vị trí ngang của hero.
-    private  int h_y = 600; //(scr_height/2-y_bound);   // vị trí dưới của hero (player).
+    // game scene or game screen instead
+
+    // vị trí ngang của hero.
+    //(scr_height/2-y_bound);   // vị trí dưới của hero (player).
+    private Donald Hero = new Donald((scr_width/2) - x_bound, 600);
 
     private int mHeroIndex = 0;
     private int m_snow_fire = 0;
@@ -308,8 +311,8 @@ class SBFThread extends Thread {
     public Bundle saveState(Bundle map) {
         synchronized (mSurfaceHolder) {
             if (map != null) {
-                map.putDouble(KEY_X, Double.valueOf(h_x));
-                map.putDouble(KEY_Y, Double.valueOf(h_y));
+                map.putDouble(KEY_X, Double.valueOf(Hero.getDonaldX()));
+                map.putDouble(KEY_Y, Double.valueOf(Hero.getDonaldY()));
             }
         }
         return map;
@@ -440,7 +443,7 @@ class SBFThread extends Thread {
      */
     public void hitTarget(Donald dn, int fire_step, int hp_lose) {
         int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
-        int mLeft = h_x + 20; // vi snow lech ra 1 chut
+        int mLeft = Hero.getDonaldX() + 20; // vi snow lech ra 1 chut
         if ((dn.getDonaldX()+20 >= mLeft) && (dn.getDonaldX() - 10) <= mLeft) {
             if( (dn.getDonaldY()+10 >= (180 - 12*fire_step)) && (dn.getDonaldY()-20) <= (180 - 12*fire_step)) {
                 dn.setHp(dn.getHp() - hp_lose);
@@ -463,11 +466,11 @@ class SBFThread extends Thread {
         cv.drawBitmap(snow_h, huey.getDonaldX(), test_snow_e_y[snow_e_y_idx]-22 + rand_donald_y, null); // 22 la distance giua snow va shadow
         cv.drawBitmap(snow_shadow, huey.getDonaldX(), test_snow_e_y[snow_e_y_idx], null);
 
-        if ((h_x - 8) <= huey.getDonaldX() && ((h_x + 8) >= huey.getDonaldX())
-                && (h_y - h_y_step <= test_snow_e_y[snow_e_y_idx]) && (h_y + h_y_step >= test_snow_e_y[snow_e_y_idx])) {
+        if ((Hero.getDonaldX() - 8) <= huey.getDonaldX() && ((Hero.getDonaldX() + 8) >= huey.getDonaldX())
+                && (Hero.getDonaldY() - h_y_step <= test_snow_e_y[snow_e_y_idx]) && (Hero.getDonaldY() + h_y_step >= test_snow_e_y[snow_e_y_idx])) {
             h_hp -= 2;
         }
-        if ( (h_x <= (huey.getDonaldX() + 8)) && (h_x >= (huey.getDonaldX() - 22))) {
+        if ( (Hero.getDonaldX() <= (huey.getDonaldX() + 8)) && (Hero.getDonaldX() >= (huey.getDonaldX() - 22))) {
             if ( (snow_h_y <= (huey.getDonaldY() + 30)) && (snow_h_y >= (huey.getDonaldY() - 10))) {
                 huey.setHp(huey.getHp() - 2);
                 snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
@@ -490,7 +493,7 @@ class SBFThread extends Thread {
             Paint paint = newPaint(Color.RED, Paint.Style.FILL_AND_STROKE, 0);
             // In Running mode
 
-            canvas.drawBitmap(mHeroMoving[mHeroIndex], h_x, h_y, null);
+            canvas.drawBitmap(mHeroMoving[mHeroIndex], Hero.getDonaldX(), Hero.getDonaldY(), null);
 
             if (donald.getHp() > 0) {
                 canvas.drawBitmap(donald.getBossImage(), donald.getDonaldX(), 85, null);
@@ -511,7 +514,7 @@ class SBFThread extends Thread {
             // Draw the speed gauge, with a two-tone effect
             canvas.save();
 
-            int snow_h_x = h_x + 12;   // snow_h_x va y fai ko dc change du xLeft top change
+            int snow_h_x = Hero.getDonaldX() + 12;   // snow_h_x va y fai ko dc change du xLeft top change
             if (m_snow_fire == 10) {
 //            	make_attack(canvas);
                 int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
@@ -519,8 +522,8 @@ class SBFThread extends Thread {
                 if (snow_h_y < 25) snow_h_y = (scr_height-y_bound);
 //        		canvas.drawBitmap(snow_h, snow_h_x, snow_h_y-22, null);
                 int rand_img = get_random(4);
-                canvas.drawBitmap(bomb.getImage(2), h_x + 22, snow_h_y-22, null); // 22 la distance giua snow va shadow
-                canvas.drawBitmap(snow_shadow, h_x + 22, snow_h_y, null);
+                canvas.drawBitmap(bomb.getImage(2), Hero.getDonaldX() + 22, snow_h_y-22, null); // 22 la distance giua snow va shadow
+                canvas.drawBitmap(snow_shadow, Hero.getDonaldX() + 22, snow_h_y, null);
 
                 for (int ii = 0; ii <= (mTop/12); ii ++) {
                     hitTarget(donald, ii, 1);
@@ -544,8 +547,8 @@ class SBFThread extends Thread {
 
                 canvas.drawBitmap(snow_h, donald.getDonaldX() + get_random1(10), test_snow_h_y-22, null); // 22 la distance giua snow va shadow
                 canvas.drawBitmap(snow_shadow, donald.getDonaldX(), test_snow_h_y, null);
-                if ((h_x + 12) >= donald.getDonaldX() && ((h_x - 12) <= donald.getDonaldX())
-                        && (h_y + 12 >= test_snow_h_y) && (h_y - 12 <= test_snow_h_y)) {
+                if ((Hero.getDonaldX() + 12) >= donald.getDonaldX() && ((Hero.getDonaldX() - 12) <= donald.getDonaldX())
+                        && (Hero.getDonaldY() + 12 >= test_snow_h_y) && (Hero.getDonaldY() - 12 <= test_snow_h_y)) {
                     h_hp -= 4;
                 }
             }
@@ -589,11 +592,11 @@ class SBFThread extends Thread {
             } else {
                 if(mpx != null) mpx.stop();
             }
-            canvas.drawBitmap(mHeroMoving[6], h_x, h_y, null);
+            canvas.drawBitmap(mHeroMoving[6], Hero.getDonaldX(), Hero.getDonaldY(), null);
             String text = "You lose ...";
             Paint p = new Paint();
             p.setColor(Color.RED);
-            canvas.drawText(text, h_x - 5, h_y - 40, p);
+            canvas.drawText(text, Hero.getDonaldX() - 5, Hero.getDonaldY() - 40, p);
 //            	canvas.restore();
         } else  if(mMode == STATE_WIN) {
             win_sound_flag++; if(win_sound_flag ==1) { mpx.start(); } else { stopSound(); };
@@ -657,8 +660,8 @@ class SBFThread extends Thread {
      */
     public void make_attack(Canvas canvas) {
 //        	playFiringSound();
-        int yTop = mCanvasHeight - ((int) h_y + mLanderHeight);
-        int xLeft = ((int) h_x - mLanderWidth / 2) + 20;
+        int yTop = mCanvasHeight - ((int) Hero.getDonaldY() + mLanderHeight);
+        int xLeft = ((int) Hero.getDonaldX() - mLanderWidth / 2) + 20;
         for (int ii = 0; ii <= (yTop/20); ii ++)
         {
             canvas.drawBitmap(snow_h, xLeft, 180 - (20*ii), null);
@@ -741,13 +744,13 @@ class SBFThread extends Thread {
         int y = (int)event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
-                if (h_x > 13 && x < h_x) { // tap on left side
+                if (Hero.getDonaldX() > 13 && x < Hero.getDonaldX()) { // tap on left side
                     // fix me
                     // do ham ben kia ko change dc value h_x ... nen can cho ham nay vao Donald
                     // neu Donald co roi thi lam cach nao tao 1 Object thay vi h_x hard code.
-                    sbf.heroMove(-12, x, y, scr_width, scr_height, h_x, m_snow_fire, mHeroIndex);
-                } else if (h_x < (scr_width-x_bound) && x >= h_x) { // tap on right side
-                    sbf.heroMove(12, x, y, scr_width, scr_height, h_x, m_snow_fire, mHeroIndex);
+                    m_snow_fire = sbf.heroMove(-12, x, y, scr_width, scr_height, Hero, m_snow_fire);
+                } else if (Hero.getDonaldX() < (scr_width-x_bound) && x >= Hero.getDonaldX()) { // tap on right side
+                    m_snow_fire = sbf.heroMove(12, x, y, scr_width, scr_height, Hero, m_snow_fire);
                 }
                 break;
             case MotionEvent.ACTION_DOWN:
