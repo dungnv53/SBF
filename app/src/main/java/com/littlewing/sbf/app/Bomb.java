@@ -84,4 +84,13 @@ public class Bomb {
         public void throwing() {
 
         }
+
+        // thowing item down
+        public void throwDownY(int step) {
+        this.bom_y -= step;
+    }
+
+        public void throwDownX(int step) {
+            this.bom_x -= step;
+        }
     }

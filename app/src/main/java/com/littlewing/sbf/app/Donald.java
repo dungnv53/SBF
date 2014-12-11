@@ -20,7 +20,7 @@ public class Donald {
 	private int e_boss_move_dir = 10;
 	private int e_boss_x = 0;
 	Random rnd = new Random();
-	Bomb item = new Bomb (dn_x, dn_y + 20);
+	private Bomb item = new Bomb (dn_x, dn_y + 20);
 	
 	public void Donald(int x, int y) {
         this.dn_x = x;
@@ -213,5 +213,5 @@ public class Donald {
 		this.hp = 56;
 		this.max_hp = 56;
 	}
-	
+
 }

@@ -12,7 +12,7 @@ import android.view.SurfaceView;
 import android.widget.TextView;
 
 
-class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
+public class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 
     private  Context mContext;
 
@@ -27,15 +27,16 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
     private int mViewWidth = getWidth(); // TODO move to Surface like class
     private int mViewHeight = getHeight();
 
-    public SBF_View(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public SBF_View(Context mContext, AttributeSet attrs) {
+        super(mContext, attrs);
+        this.mContext = mContext;
 
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
 
         // create thread only; it's started in surfaceCreated()
-        thread = new SBFThread(holder, context, new Handler() {
+        thread = new SBFThread(holder, mContext, new Handler() {
             @Override
             public void handleMessage(Message m) {
                 mStatusText.setText(m.getData().getString("text"));
@@ -49,7 +50,7 @@ class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 		}
         setFocusable(true); // make sure we get key events
 
-    	mpx = MediaPlayer.create(context, R.raw.night);
+    	mpx = MediaPlayer.create(mContext, R.raw.night);
     	mpx.start();
     }
 

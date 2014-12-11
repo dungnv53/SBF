@@ -1,9 +1,5 @@
 package com.littlewing.sbf.app;
 
-/**
- * Created by dungnv on 12/10/14.
- */
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -21,20 +17,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 
-import java.util.Random;
 import android.media.SoundPool;
 import android.media.AudioManager;
 
-/**
- * View that draws, takes keystrokes, etc. for a simple LL game.
- *
- * Has a mode which RUNNING, PAUSED, etc. Has a x, y, dx, dy, ... capturing the
- * current ship physics. All x/y etc. are measured with (0,0) at the lower left.
- * updatePhysics() advances the physics based on realtime.
- *  draw() renders the
- * ship, and does an invalidate() to prompt another draw() as soon as possible
- * by the system.
- */
 class SBFThread extends Thread {
     private Bitmap[] mHeroMoving = new Bitmap[7];
     private Bitmap[] mEnemy = new Bitmap[5];
@@ -49,11 +34,6 @@ class SBFThread extends Thread {
     private Bitmap img_sp1;
     private Bitmap img_sp2;
     private Bitmap img_sp3;
-    /**
-     * dung luu 3 kieu spec tuy vao mana
-     * Dung ra fai dung RMS nhung o day tam test cai int nay da.
-     *
-     */
     private int use_special = 0;	// integer for store 3 type of special follow the mana degree
     Resources mRes;
 
@@ -66,33 +46,14 @@ class SBFThread extends Thread {
     private static final String KEY_X = "h_x";
     private static final String KEY_Y = "h_y";
 
-        /*
-         * Member (state) fields
-         */
     /** The drawable to use as the background of the animation canvas */
     private Bitmap mBackgroundImage;
-
-    /**
-     * Current height of the surface/canvas.
-     */
-    private int mCanvasHeight = 1;
-
-    /**
-     * Current width of the surface/canvas.
-     */
-    private int mCanvasWidth = 1;
 
     /** Message handler used by thread to interact with TextView */
     private Handler mHandler;
 
-    /** Pixel height of lander image. */
-    private  int mLanderHeight;
-
     /** What to draw for the title game in its normal state */
     private Bitmap mTitleImage;
-
-    /** Pixel width of lander image. */
-    private int mLanderWidth;
 
     /** Used to figure out elapsed time between frames */
     private  long mLastTime;
@@ -117,24 +78,12 @@ class SBFThread extends Thread {
     //(scr_height/2-y_bound);   // vị trí dưới của hero (player).
     private Donald Hero = new Donald((scr_width/2) - x_bound, 600);
 
-    private int mHeroIndex = 0;
     private int m_snow_fire = 0;
-    private int e_snow_fired = 0;
 
-    int snow_h_y = (scr_height-y_bound);
-    int h_hp = 84; // hp cua hero
-    private Random rnd = new Random();
-
-    public static final int GAME_THREAD_DELAY = 600;
     private Donald donald;
-    /**
-     * Mang donald luie
-     */
     private Donald[] luie = new Donald[3];
     Bomb bomb;
     // Vi tri bat dau nem cua boss.
-    private int test_snow_h_y = (scr_height-y_bound);
-
     private Bitmap allclear;
 
     private int[] test_snow_e_y = new int[] {70, 70, 70};
@@ -145,9 +94,10 @@ class SBFThread extends Thread {
     private Bitmap v;
 
     private Context myContext; // Them vao nhu mContext ben SBF class. fix me
-    private MediaPlayer mpx; // music
 
-    private SoundPool sp = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+    private SoundManager sound = new SoundManager(myContext);
+//    private  int soundIds[] = new int[12];
+//    private  SoundPool mpx = sound.getmSoundPool();
 
     private SBFGame sbf = new SBFGame();
 
@@ -158,27 +108,10 @@ class SBFThread extends Thread {
         myContext = context;
 
         Resources res = context.getResources();
+        mHeroMoving = sbf.loadHero(mHeroMoving, myContext); // TODO create a method handle all load sprite with number of img
 
-        mHeroMoving[0] = BitmapFactory.decodeResource(res, R.drawable.hero3_0);
-        mHeroMoving[1] = BitmapFactory.decodeResource(res, R.drawable.hero3_1);
-        mHeroMoving[2] = BitmapFactory.decodeResource(res, R.drawable.hero3_2);
-        mHeroMoving[3] = BitmapFactory.decodeResource(res, R.drawable.hero3_3);
-        mHeroMoving[4] = BitmapFactory.decodeResource(res, R.drawable.hero3_4);
-        mHeroMoving[5] = BitmapFactory.decodeResource(res, R.drawable.hero_vic3);
-        mHeroMoving[6] = BitmapFactory.decodeResource(res, R.drawable.hero_lose3);
-
-        mEnemy[0] = BitmapFactory.decodeResource(res, R.drawable.enemy00_3);
-        mEnemy[1] = BitmapFactory.decodeResource(res, R.drawable.enemy01_3);
-        mEnemy[2] = BitmapFactory.decodeResource(res, R.drawable.enemy02_3);
-        mEnemy[3] = BitmapFactory.decodeResource(res, R.drawable.enemy03_3);
-        mEnemy[4] = BitmapFactory.decodeResource(res, R.drawable.enemy00_3);
-
-        mBoss[0] = BitmapFactory.decodeResource(res, R.drawable.boss20_3);
-        mBoss[1] = BitmapFactory.decodeResource(res, R.drawable.boss21_3);
-        mBoss[2] = BitmapFactory.decodeResource(res, R.drawable.boss22_3);
-        mBoss[3] = BitmapFactory.decodeResource(res, R.drawable.boss23_3);
-
-        mBoss[4] = BitmapFactory.decodeResource(res, R.drawable.boss20_3);
+        mEnemy = sbf.loadEnemy(mEnemy, myContext);
+        mBoss = sbf.loadBoss(mBoss, myContext);
 
         snow_h = BitmapFactory.decodeResource(res, R.drawable.item3_0);
         snow_shadow = BitmapFactory.decodeResource(res, R.drawable.shadow0_3);
@@ -193,11 +126,7 @@ class SBFThread extends Thread {
         img_sp2 = BitmapFactory.decodeResource(res, R.drawable.sp2_3);
         img_sp3 = BitmapFactory.decodeResource(res, R.drawable.sp3_3);
 
-        item[0] = BitmapFactory.decodeResource(res, R.drawable.item3_0);
-        item[1] = BitmapFactory.decodeResource(res, R.drawable.item1_3);
-        item[2] = BitmapFactory.decodeResource(res, R.drawable.item2_3);
-        item[3] = BitmapFactory.decodeResource(res, R.drawable.item3_3);
-        item[4] = BitmapFactory.decodeResource(res, R.drawable.item4_3);
+        item = sbf.loadItem(item, myContext);
 
         // cache handles to our key sprites & other drawables
         mTitleImage = BitmapFactory.decodeResource(res, R.drawable.title_bg_hori);
@@ -211,10 +140,6 @@ class SBFThread extends Thread {
         allclear = Bitmap.createScaledBitmap(allclear, scr_width, (int)(scr_height/2), true);
 
         v = BitmapFactory.decodeResource(res, R.drawable.v);
-
-        // Use the regular lander image as the model size for all sprites
-        mLanderWidth = mTitleImage.getWidth();
-        mLanderHeight = mTitleImage.getHeight();
 
         donald = new Donald(50, 50, mBoss);
         for(int kk = 0; kk < 3; kk ++) {
@@ -234,21 +159,6 @@ class SBFThread extends Thread {
         }
     }
 
-    public Paint newPaint(int clr, Paint.Style stl, int txtSize) {
-        Paint paint = new Paint();
-        if(clr != 0) { paint.setColor(clr); }
-        if(stl != null) { paint.setStyle(stl); }
-        if(txtSize > 0) { paint.setTextSize(txtSize); }
-        return paint;
-    }
-    public int get_random(int paramInt) {
-        int i = this.rnd.nextInt() % paramInt;
-        return (i < 0) ? -i : i;
-    }
-    public int get_random1(int paramInt) {
-        int i = this.rnd.nextInt() % paramInt;
-        return (i<0) ? -5 : i;
-    }
     /**
      * Pauses the physics update & animation.
      */
@@ -340,15 +250,15 @@ class SBFThread extends Thread {
      * @param message string to add to screen or null
      */
     public void setState(int mode, CharSequence message) {
-            /*
-             * This method optionally can cause a text message to be displayed
-             * to the user when the mode changes. Since the View that actually
-             * renders that text is part of the main View hierarchy and not
-             * owned by this thread, we can't touch the state of that View.
-             * Instead we use a Message + Handler to relay commands to the main
-             * thread, which updates the user-text View.
-             *
-             */
+        /*
+         * This method optionally can cause a text message to be displayed
+         * to the user when the mode changes. Since the View that actually
+         * renders that text is part of the main View hierarchy and not
+         * owned by this thread, we can't touch the state of that View.
+         * Instead we use a Message + Handler to relay commands to the main
+         * thread, which updates the user-text View.
+         *
+         */
         synchronized (mSurfaceHolder) {
             mMode = mode;
 
@@ -396,9 +306,6 @@ class SBFThread extends Thread {
     public void setSurfaceSize(int width, int height) {
         // synchronized to make sure these all change atomically
         synchronized (mSurfaceHolder) {
-            mCanvasWidth = width;
-            mCanvasHeight = height;
-
             // don't forget to resize the background image
             mBackgroundImage = Bitmap.createScaledBitmap(mBackgroundImage, width, height, true);
         }
@@ -468,12 +375,12 @@ class SBFThread extends Thread {
 
         if ((Hero.getDonaldX() - 8) <= huey.getDonaldX() && ((Hero.getDonaldX() + 8) >= huey.getDonaldX())
                 && (Hero.getDonaldY() - h_y_step <= test_snow_e_y[snow_e_y_idx]) && (Hero.getDonaldY() + h_y_step >= test_snow_e_y[snow_e_y_idx])) {
-            h_hp -= 2;
+            Hero.setHp(Hero.getHp()-2);
         }
         if ( (Hero.getDonaldX() <= (huey.getDonaldX() + 8)) && (Hero.getDonaldX() >= (huey.getDonaldX() - 22))) {
-            if ( (snow_h_y <= (huey.getDonaldY() + 30)) && (snow_h_y >= (huey.getDonaldY() - 10))) {
+            if ( (Hero.getBomb().getX() <= (huey.getDonaldY() + 30)) && (Hero.getBomb().getY() >= (huey.getDonaldY() - 10))) {
                 huey.setHp(huey.getHp() - 2);
-                snow_h_y = 200; // fai set lai snow_y ko thi hp mat lien tuc
+                Hero.getBomb().setY(200); // fai set lai snow_y ko thi hp mat lien tuc
             }
         }
     }
@@ -490,10 +397,9 @@ class SBFThread extends Thread {
 //            draw_enemy(canvas);
             donald.act(1, scr_width, scr_height);
             donald.move();
-            Paint paint = newPaint(Color.RED, Paint.Style.FILL_AND_STROKE, 0);
-            // In Running mode
+            Paint paint = sbf.newPaint(Color.RED, Paint.Style.FILL_AND_STROKE, 0);
 
-            canvas.drawBitmap(mHeroMoving[mHeroIndex], Hero.getDonaldX(), Hero.getDonaldY(), null);
+            canvas.drawBitmap(mHeroMoving[Hero.getIdx()], Hero.getDonaldX(), Hero.getDonaldY(), null);
 
             if (donald.getHp() > 0) {
                 canvas.drawBitmap(donald.getBossImage(), donald.getDonaldX(), 85, null);
@@ -502,9 +408,8 @@ class SBFThread extends Thread {
             for(int ii = 0; ii < 3; ii ++) {
                 luie[ii].act(1, scr_width, scr_height);
                 luie[ii].move();
-
                 luie[ii].setBomb(bomb);
-                luie[ii].item.dropBomb(luie[ii].getDonaldY(), 3/4*scr_height);
+                luie[ii].getBomb().dropBomb(luie[ii].getDonaldY(), 3/4*scr_height);
 
                 if (luie[ii].getHp() > 0) {
                     canvas.drawBitmap(luie[ii].getBossImage(), luie[ii].getDonaldX(), luie[ii].getDonaldY(), null);
@@ -514,16 +419,12 @@ class SBFThread extends Thread {
             // Draw the speed gauge, with a two-tone effect
             canvas.save();
 
-            int snow_h_x = Hero.getDonaldX() + 12;   // snow_h_x va y fai ko dc change du xLeft top change
             if (m_snow_fire == 10) {
-//            	make_attack(canvas);
                 int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
-                snow_h_y -= 12;
-                if (snow_h_y < 25) snow_h_y = (scr_height-y_bound);
-//        		canvas.drawBitmap(snow_h, snow_h_x, snow_h_y-22, null);
-                int rand_img = get_random(4);
-                canvas.drawBitmap(bomb.getImage(2), Hero.getDonaldX() + 22, snow_h_y-22, null); // 22 la distance giua snow va shadow
-                canvas.drawBitmap(snow_shadow, Hero.getDonaldX() + 22, snow_h_y, null);
+                Hero.getBomb().throwDownY(12);
+                if (Hero.getBomb().getY() < 25) Hero.getBomb().setY((scr_height-y_bound));
+                canvas.drawBitmap(bomb.getImage(2), Hero.getDonaldX() + 22, Hero.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
+                canvas.drawBitmap(snow_shadow, Hero.getDonaldX() + 22, Hero.getBomb().getY(), null);
 
                 for (int ii = 0; ii <= (mTop/12); ii ++) {
                     hitTarget(donald, ii, 1);
@@ -541,31 +442,28 @@ class SBFThread extends Thread {
             }
             // Boss attack
             if (donald.getHp() >= 0) {
-                test_snow_h_y += 6;
-                if (test_snow_h_y >= (scr_height-y_bound))    // biên cho item bay tới.
-                    test_snow_h_y = 80;
+                donald.getBomb().throwDownY(-6); // throw down minus like throw up
+                if (donald.getBomb().getY() >= (scr_height-y_bound))    // biên cho item bay tới.
+                    donald.getBomb().setY(80);
 
-                canvas.drawBitmap(snow_h, donald.getDonaldX() + get_random1(10), test_snow_h_y-22, null); // 22 la distance giua snow va shadow
-                canvas.drawBitmap(snow_shadow, donald.getDonaldX(), test_snow_h_y, null);
+                canvas.drawBitmap(snow_h, donald.getDonaldX() + sbf.get_random1(10), donald.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
+                canvas.drawBitmap(snow_shadow, donald.getDonaldX(), donald.getBomb().getY(), null);
                 if ((Hero.getDonaldX() + 12) >= donald.getDonaldX() && ((Hero.getDonaldX() - 12) <= donald.getDonaldX())
-                        && (Hero.getDonaldY() + 12 >= test_snow_h_y) && (Hero.getDonaldY() - 12 <= test_snow_h_y)) {
-                    h_hp -= 4;
+                        && (Hero.getDonaldY() + 12 >= donald.getBomb().getY()) && (Hero.getDonaldY() - 12 <= donald.getBomb().getY())) {
+                    Hero.loseHp(4);
                 }
             }
-            // check snow hit hero
-            // Van chua su dung dc tinh nang isDestroyed cua Bomb Class de tranh viec hp giam lien tuc do snow ko huy.
 
-            // hero die ?
-            if (h_hp <= 0) {
+            if (Hero.getHp() <= 0) {   // hero die
                 mMode = STATE_LOSE;
             }
-            // enemy attack
+
             // cause can not call e_attack_ai() propertly
             if(luie[0].getHp() > 0) {
-                drawEnemy(canvas, luie[0], 0, get_random1(8), 18);
+                drawEnemy(canvas, luie[0], 0, sbf.get_random1(8), 18);
             }
             if(luie[1].getHp() > 0) {
-                drawEnemy(canvas, luie[1], 1, get_random1(8), 10);
+                drawEnemy(canvas, luie[1], 1, sbf.get_random1(8), 10);
             }
             if(luie[2].getHp() > 0) {
                 drawEnemy(canvas, luie[2], 2, 0, 8);
@@ -573,24 +471,18 @@ class SBFThread extends Thread {
 //            	draw special
             if (use_special == 1) {
                 use_special(canvas);
-//            			for(int ii = 0; ii <=3 ; ii ++) {
-//            				luie[ii].setHp(luie[ii].getHp() - 8);
-//            			}
-//            			donald.setHp(donald.getHp() - 8);
-
             }
-//            	canvas.drawBitmap(mBackgroundImage, 0, 0, null);
             canvas.save();
 
         } // end running draw
 
         else if(mMode == STATE_LOSE) {
             lose_flag_sound ++;
-            mpx = MediaPlayer.create(myContext, R.raw.s_lose);
+
             if (lose_flag_sound  == 1) {
-                mpx.start();
+//                soundIds[10] = mpx.play(soundIds[10], 1, 1, 1, 0, 1);
             } else {
-                if(mpx != null) mpx.stop();
+//                if(mpx != null) mpx.stop(soundIds[10]);
             }
             canvas.drawBitmap(mHeroMoving[6], Hero.getDonaldX(), Hero.getDonaldY(), null);
             String text = "You lose ...";
@@ -599,10 +491,14 @@ class SBFThread extends Thread {
             canvas.drawText(text, Hero.getDonaldX() - 5, Hero.getDonaldY() - 40, p);
 //            	canvas.restore();
         } else  if(mMode == STATE_WIN) {
-            win_sound_flag++; if(win_sound_flag ==1) { mpx.start(); } else { stopSound(); };
+            win_sound_flag++; if(win_sound_flag ==1) {
+//                mpx.play(soundIds[9], 1, 1, 1, 0, 1);
+            } else {
+//                mpx.stop(soundIds[9]);
+            };
 
             String text = "Victory !... \n";
-            Paint p = newPaint(Color.RED, null, 35);
+            Paint p = sbf.newPaint(Color.RED, null, 35);
             String text2 = "Acquired 32 golds.";
 
             canvas.save();
@@ -614,12 +510,6 @@ class SBFThread extends Thread {
 
             try {
                 if(canvas != null) {
-//                    canvas.save();
-//                    canvas.drawBitmap(allclear, 0, 30, null);
-//                    canvas.drawBitmap(mHeroMoving[5], (scr_width/2-x_bound), (scr_height/2-y_bound), null);
-//                    canvas.drawBitmap(v, (scr_width/2-x_bound+18), (scr_height/2-y_bound-22), null);
-//                    canvas.drawText(text, (scr_width/2-x_bound), (scr_height/2 - 20), p);
-//                    canvas.drawText(text2, (scr_width/2-x_bound), (scr_height/2), p);
                 }
             } catch(NullPointerException e) {
                 Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -659,57 +549,8 @@ class SBFThread extends Thread {
      1st we make target length is random n then use the POWER later
      */
     public void make_attack(Canvas canvas) {
-//        	playFiringSound();
-        int yTop = mCanvasHeight - ((int) Hero.getDonaldY() + mLanderHeight);
-        int xLeft = ((int) Hero.getDonaldX() - mLanderWidth / 2) + 20;
-        for (int ii = 0; ii <= (yTop/20); ii ++)
-        {
-            canvas.drawBitmap(snow_h, xLeft, 180 - (20*ii), null);
-            canvas.drawBitmap(snow_shadow, xLeft, 180 -(20*ii) + 22, null);
-        }
-        // if (yTop < 25) ...
-        m_snow_fire = 0;
     }
 
-    public void e_attack(Canvas canvas, int targetX, int targetY) {
-        // dat co flag de chi cho enemy nem tuyet khi snow da ve vi tri dich
-        // co se dc bat lai khi snow trung dich hay roi xuong
-        for (int ii = 0; ii <= (targetY/20); ii ++)
-        {
-            canvas.drawBitmap(snow_h, targetX,  (20*ii), null);
-            canvas.drawBitmap(snow_shadow, targetX, (20*ii) + 22, null);
-        }
-        // Test draw snow gap
-        canvas.drawBitmap(snow_h, targetX += 3, targetX += 3, null);
-    }
-    public void e_attack_ai(Canvas canvas, int enemy_x, int enemy_y, int hero_x, int hero_y) {
-        int delta_x = (int)(Math.abs(enemy_x - hero_x));
-        int delta_y = (int)(Math.abs(enemy_y - hero_y)); // tinh duong cheo tao boi hero va enemy
-        int c = (int) (Math.sqrt(delta_x*delta_x + delta_y*delta_y));
-        // Tinh Delta X, Delta Y de ve duong dan cho enemy nem vao hero
-        int d_x = 12 * delta_x / c; // d_x de cho snow bay lech theo phuong ngang
-        int d_y = 12 * delta_y / c;
-        int snow_e_xx = enemy_x;  // de ve trog canvas
-        int snow_e_yy = enemy_y;
-        if(e_snow_fired == 10) {
-            snow_e_xx += d_x;
-            snow_e_yy += d_y;
-
-            canvas.drawBitmap(snow_h, snow_e_xx, snow_e_yy-22, null); // 22 la distance giua snow va shadow
-            canvas.drawBitmap(snow_shadow, snow_e_xx, snow_e_yy, null);
-        }
-        if ( snow_e_yy > 205 ){
-            e_snow_fired = 0;
-        }
-        e_snow_fired = 10;
-    }
-    /**
-     * Them ham boss_attack() voi random target, sound play
-     * test hp ... va vi tri nem
-     * ko run co le do chi dc goi 1 lan
-     * Neu dat vao ham run() chay chung voi doDraw() thi lam game speed nhanh gap co 2x
-     * -> tam thoi cho chay trong ham doDraw()
-     */
     public void boss_attack(Canvas canvas) {
         int width = scr_width;     // game screen width
         int height = scr_height;   // game screen height
@@ -717,14 +558,14 @@ class SBFThread extends Thread {
         int step = height/15;       // step of snowball over screen
 
         if (donald.getHp() >= 0) {
-            test_snow_h_y += step;
-            if (test_snow_h_y >= (height - h_bound))     // enemy snow pass hero position
-                test_snow_h_y = h_bound/2;
+            donald.getBomb().throwDownY(-step);
+            if (donald.getBomb().getY() >= (height - h_bound))     // enemy snow pass hero position
+                donald.getBomb().throwDownY(h_bound/2);
 //				playFiringSound();
 //				playHitTargetSound();
             canvas.drawBitmap(mBackgroundImage, 0, 0, null);
-            canvas.drawBitmap(snow_h, donald.getDonaldX() + step, test_snow_h_y-(step/2), null); // 22 la distance giua snow va shadow
-            canvas.drawBitmap(snow_shadow, donald.getDonaldX() + step, test_snow_h_y, null);
+            canvas.drawBitmap(snow_h, donald.getDonaldX() + step, donald.getBomb().getY()-(step/2), null); // 22 la distance giua snow va shadow
+            canvas.drawBitmap(snow_shadow, donald.getDonaldX() + step, donald.getBomb().getY(), null);
 //				SBF_View.this.invalidate();
         }
     }
@@ -736,7 +577,7 @@ class SBFThread extends Thread {
     private void updatePhysics() {
         long now = System.currentTimeMillis();
         if (mLastTime > now) return;
-        mLastTime = now;                    return;
+        mLastTime = now; return;
     }
 
     public boolean onTouch(MotionEvent event) {
@@ -763,45 +604,6 @@ class SBFThread extends Thread {
                 break;
         }
         return true;
-    }
-
-    public  void stopSound() { // TODO move to soundPool
-        if(mpx != null) {
-            mpx.stop();
-            mpx.release();
-            mpx = null;
-        }
-    }
-
-    // Create sound effect for game
-    private void loadSoundPool(Context mContext) {
-        int soundIds[] = new int[10]; // 10 sound
-        soundIds[0] = sp.load(mContext, R.raw.night, 1); // remember smaller 1MB
-        soundIds[1] = sp.load(mContext, R.raw.one, 2);
-        soundIds[2] = sp.load(mContext, R.raw.night, 3);
-        soundIds[3] = sp.load(mContext, R.raw.three, 4);
-        soundIds[4] = sp.load(mContext, R.raw.four, 5);
-        soundIds[5] = sp.load(mContext, R.raw.five, 6);
-        soundIds[6] = sp.load(mContext, R.raw.six, 7);
-        soundIds[7] = sp.load(mContext, R.raw.s_fire, 8);
-        soundIds[8] = sp.load(mContext, R.raw.s_hit, 9);
-        soundIds[9] = sp.load(mContext, R.raw.night, 1);
-
-        // use
-        //sp.play(soundIds[0], 1, 1, 1, 0, 1.0);
-        /*
-            soundID a soundID returned by the load() function
-
-            leftVolume left volume value (range = 0.0 to 1.0)
-
-            rightVolume right volume value (range = 0.0 to 1.0)
-
-            priority stream priority (0 = lowest priority)
-
-            loop loop mode (0 = no loop, -1 = loop forever)
-
-            rate playback rate (1.0 = normal playback, range 0.5 to 2.0)
-         */
     }
 
 }
