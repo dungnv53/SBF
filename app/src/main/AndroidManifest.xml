@@ -17,11 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Village"
+        <!--activity
+            android:name=".SBF"
             android:label="@string/sbf"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-        </activity>
+        </activity-->
 </application>
 
 </manifest>

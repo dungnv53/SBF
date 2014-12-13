@@ -49,12 +49,6 @@ public class Village extends Activity {
         return true;
     }
 
-    public void startSBFActivity(View view) {
-        Intent intent = new Intent(this, SBF.class);
-        startActivity(intent);
-        finish();
-    }
-
     /**
      * Invoked when the user selects an item from the Menu.
      *
@@ -113,6 +107,14 @@ public class Village extends Activity {
             mVillageThread.restoreState(savedInstanceState);
             Log.w(this.getClass().getName(), "SIS is nonnull");
         }
+    }
+
+    public void startSBFActivity(View view) {
+        Intent i = new Intent(Village.this, SBF.class);
+        startActivity(i);
+//        Intent intent = new Intent(SBF.this, SBF.class);
+//        startActivity(intent);
+//        finish();
     }
 
     /**

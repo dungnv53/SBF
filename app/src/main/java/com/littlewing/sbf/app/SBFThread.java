@@ -99,7 +99,14 @@ class SBFThread extends Thread {
 //    private  int soundIds[] = new int[12];
 //    private  SoundPool mpx = sound.getmSoundPool();
 
+    // start, play, running, lose are the states we use
+    public int mState;
+
     private SBFGame sbf = new SBFGame();
+
+    public SBFThread() {
+        super();
+    }
 
     public SBFThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
         // get handles to some important objects
@@ -299,6 +306,18 @@ class SBFThread extends Thread {
                 msg.setData(b);
                 mHandler.sendMessage(msg);
             }
+        }
+    }
+
+    /**
+     * returns the current int value of game state as defined by state
+     * tracking constants
+     *
+     * @return
+     */
+    public int getGameState() {
+        synchronized (mSurfaceHolder) {
+            return mState;
         }
     }
 

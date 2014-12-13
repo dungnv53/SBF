@@ -210,7 +210,6 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                     c = mSurfaceHolder.lockCanvas(null);
                     synchronized (mSurfaceHolder) {
                         if (mMode == STATE_RUNNING)  updatePhysics(); doDraw(c);
-//                        boss_attack(c);
                     }
                 } finally {
                     // do this in a finally so that if an exception is thrown
@@ -396,16 +395,7 @@ class Village_View extends SurfaceView implements SurfaceHolder.Callback {
                 canvas.drawText(text, h_x - 5, h_y - 40, p);
 //            	canvas.restore();
             } else  if(mMode == STATE_WIN) {
-                String text = "Victory !... \n";
-                Paint p = newPaint(Color.RED, null, 35);
-                canvas.drawBitmap(allclear, 0, 30, null);
-                canvas.drawBitmap(mHeroMoving[5], (scr_width/2-x_bound), (scr_height/2-y_bound), null);
-                canvas.drawBitmap(v, (scr_width/2-x_bound+18), (scr_height/2-y_bound-22), null);
-                canvas.drawText(text, (scr_width/2-x_bound), (scr_height/2 - 20), p);
-                String text2 = "Southern Boys challenged you!!";
-                canvas.drawText(text2, (scr_width/2-x_bound), (scr_height/2), p);
-                canvas.save();
-//            	canvas.restore();
+
             } else if (mMode == STATE_PAUSE) {
                 canvas.save();
             } else {

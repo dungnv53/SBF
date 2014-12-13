@@ -7,9 +7,11 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Button;
 
-public class SBF extends Activity {
+public class SBF extends Activity implements View.OnClickListener {
 	
 	private static final int MENU_PAUSE = 4;
 	
@@ -25,6 +27,10 @@ public class SBF extends Activity {
     /** A handle to the View in which the game is running. */
     private SBF_View mSBF_View;
 
+    public void SBF() {
+        mSBFThread = new SBFThread();
+    }
+
     /**
      * Invoked during init to give the Activity a chance to set up its Menu.
      *
@@ -34,10 +40,10 @@ public class SBF extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, MENU_START, 0, R.string.menu_start);
-        menu.add(0, MENU_STOP, 0, R.string.menu_stop);
-        menu.add(0, MENU_PAUSE, 0, R.string.menu_pause);
-        menu.add(0, MENU_RESUME, 0, R.string.menu_resume);
+//        menu.add(0, MENU_START, 0, R.string.menu_start);
+//        menu.add(0, MENU_STOP, 0, R.string.menu_stop);
+//        menu.add(0, MENU_PAUSE, 0, R.string.menu_pause);
+//        menu.add(0, MENU_RESUME, 0, R.string.menu_resume);
     //    menu.add(0, MENU_EASY, 0, R.string.menu_easy);
     //    menu.add(0, MENU_MEDIUM, 0, R.string.menu_medium);
     //    menu.add(0, MENU_HARD, 0, R.string.menu_hard);
@@ -86,6 +92,9 @@ public class SBF extends Activity {
         // tell system to use the layout defined in our XML file
         setContentView(R.layout.activity_sbf);
 
+        Button start = (Button) findViewById(R.id.gogo);
+        start.setOnClickListener(this);
+
         // get handles to the SBF_View from XML, and its SBFThread
         mSBF_View = (SBF_View) findViewById(R.id.sbf);
         mSBFThread = mSBF_View.getThread();
@@ -102,6 +111,10 @@ public class SBF extends Activity {
             mSBFThread.restoreState(savedInstanceState);
             Log.w(this.getClass().getName(), "SIS is nonnull");
         }
+    }
+
+    public void startSBFActivity() {
+        mSBFThread.doStart();
     }
 
     /**
@@ -125,5 +138,17 @@ public class SBF extends Activity {
         super.onSaveInstanceState(outState);
         mSBFThread.saveState(outState);
         Log.w(this.getClass().getName(), "SIS called");
+    }
+
+
+    /**
+     * Handles component interaction
+     *
+     * @param v The object which has been clicked
+     */
+    public void onClick(View v) {
+        // this is the first screen
+        // TODO change button state follow gamestate like AA
+            mSBFThread.setState(mSBFThread.STATE_RUNNING);
     }
 }
