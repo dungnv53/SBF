@@ -148,7 +148,9 @@ class SBFThread extends Thread {
 
         v = BitmapFactory.decodeResource(res, R.drawable.v);
 
+        Bomb donald_bomd = new Bomb(50, 50);
         donald = new Donald(50, 50, mBoss);
+        donald.setBomb(donald_bomd);
         for(int kk = 0; kk < 3; kk ++) {
             luie[kk] = new Donald (60*kk, kk*25, mEnemy);
         }
@@ -384,7 +386,7 @@ class SBFThread extends Thread {
     * */
     public void drawEnemy(Canvas cv, Donald huey, int snow_e_y_idx, int rand_donald_y, int h_y_step) {
         test_snow_e_y [snow_e_y_idx] += 6;
-        if(test_snow_e_y[snow_e_y_idx] >= 205)
+        if(test_snow_e_y[snow_e_y_idx] >= scr_height*2/3)
             test_snow_e_y[snow_e_y_idx] = 70;
 
         // TODO cho shadow va snow tach xa dan theo time
@@ -412,7 +414,7 @@ class SBFThread extends Thread {
     public void doDraw(Canvas canvas) {
         if (mMode == STATE_RUNNING) {
             canvas.drawBitmap(mBackgroundImage, 0, 0, null);
-            boss_attack(canvas);
+//            boss_attack(canvas);
 //            draw_enemy(canvas);
             donald.act(1, scr_width, scr_height);
             donald.move();
@@ -583,8 +585,6 @@ class SBFThread extends Thread {
 //				playFiringSound();
 //				playHitTargetSound();
             canvas.drawBitmap(mBackgroundImage, 0, 0, null);
-            canvas.drawBitmap(snow_h, donald.getDonaldX() + step, donald.getBomb().getY()-(step/2), null); // 22 la distance giua snow va shadow
-            canvas.drawBitmap(snow_shadow, donald.getDonaldX() + step, donald.getBomb().getY(), null);
 //				SBF_View.this.invalidate();
         }
     }
