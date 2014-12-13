@@ -9,7 +9,10 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.widget.Button;
 
 public class Village extends Activity {
 
@@ -44,6 +47,12 @@ public class Village extends Activity {
         //    menu.add(0, MENU_MEDIUM, 0, R.string.menu_medium);
         //    menu.add(0, MENU_HARD, 0, R.string.menu_hard);
         return true;
+    }
+
+    public void startSBFActivity(View view) {
+        Intent intent = new Intent(this, SBF.class);
+        startActivity(intent);
+        finish();
     }
 
     /**
