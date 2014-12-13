@@ -49,6 +49,10 @@ class SBFThread extends Thread {
     /** The drawable to use as the background of the animation canvas */
     private Bitmap mBackgroundImage;
 
+    // ui
+    private Bitmap mUi;
+    private Bitmap mBg2;
+
     /** Message handler used by thread to interact with TextView */
     private Handler mHandler;
 
@@ -76,7 +80,7 @@ class SBFThread extends Thread {
 
     // vị trí ngang của hero.
     //(scr_height/2-y_bound);   // vị trí dưới của hero (player).
-    private Donald Hero = new Donald((scr_width/2) - x_bound, 600);
+    private Donald Hero = new Donald((scr_width/2) - x_bound, scr_height*2/3);
 
     private int m_snow_fire = 0;
 
@@ -141,7 +145,11 @@ class SBFThread extends Thread {
 
         // load background image as a Bitmap instead of a Drawable b/c
         // we don't need to transform it and it's faster to draw this way
-        mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.bck01);
+        mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.bg);
+        mUi = BitmapFactory.decodeResource(res, R.drawable.ui);
+        mUi = Bitmap.createScaledBitmap(mUi, scr_width, 110, true);
+        mBg2 = BitmapFactory.decodeResource(res, R.drawable.bg_2);
+        mBg2 = Bitmap.createScaledBitmap(mBg2, scr_width, 148, true);
 
         allclear = BitmapFactory.decodeResource(res, R.drawable.allclear);
         allclear = Bitmap.createScaledBitmap(allclear, scr_width, (int)(scr_height/2), true);
@@ -329,6 +337,7 @@ class SBFThread extends Thread {
         synchronized (mSurfaceHolder) {
             // don't forget to resize the background image
             mBackgroundImage = Bitmap.createScaledBitmap(mBackgroundImage, width, height, true);
+            // ui TODO
         }
     }
 
@@ -414,6 +423,8 @@ class SBFThread extends Thread {
     public void doDraw(Canvas canvas) {
         if (mMode == STATE_RUNNING) {
             canvas.drawBitmap(mBackgroundImage, 0, 0, null);
+            canvas.drawBitmap(mUi, 0, scr_height-mUi.getHeight(), null);
+            canvas.drawBitmap(mBg2, 0, 0, null);
 //            boss_attack(canvas);
 //            draw_enemy(canvas);
             donald.act(1, scr_width, scr_height);
