@@ -83,7 +83,7 @@ class SBFThread extends Thread {
 
     // vị trí ngang của hero.
     //(scr_height/2-y_bound);   // vị trí dưới của hero (player).
-    private Donald Hero = new Donald((scr_width/2) - x_bound, scr_height*2/3);
+    private Donald Hero;
 
     private int m_snow_fire = 0;
 
@@ -123,6 +123,8 @@ class SBFThread extends Thread {
         display.getSize(size);
         this.scr_width = size.x;
         this.scr_height = size.y;
+
+        this.Hero = new Donald((scr_width/2) - x_bound, scr_height*2/3);
     }
 
     public SBFThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
@@ -138,6 +140,8 @@ class SBFThread extends Thread {
         display.getSize(size);
         this.scr_width = size.x;
         this.scr_height = size.y;
+
+        this.Hero = new Donald((scr_width/2) - x_bound, scr_height*2/3);
 
         Resources res = context.getResources();
         mHeroMoving = sbf.loadHero(mHeroMoving, myContext); // TODO create a method handle all load sprite with number of img
