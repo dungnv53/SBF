@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -21,7 +22,6 @@ public class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
 
     /** The thread that actually draws the animation */
     private SBFThread thread;
-
 
 	private MediaPlayer mpx;
     private int mViewWidth = getWidth(); // TODO move to Surface like class
@@ -42,6 +42,9 @@ public class SBF_View extends SurfaceView implements SurfaceHolder.Callback {
                 mStatusText.setText(m.getData().getString("text"));
             }
         });
+//        thread.setScreenSize(mViewWidth, mViewHeight); // dung Display service roai
+
+        Log.e("TAG", mViewWidth +" : "+ mViewHeight);
         try {
 			SBFThread.sleep(600);
 		} catch (InterruptedException e) {

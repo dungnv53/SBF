@@ -8,10 +8,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -19,6 +21,7 @@ import android.view.View;
 
 import android.media.SoundPool;
 import android.media.AudioManager;
+import android.view.WindowManager;
 
 class SBFThread extends Thread {
     private Bitmap[] mHeroMoving = new Bitmap[7];
@@ -71,10 +74,10 @@ class SBFThread extends Thread {
     /** Handle to the surface manager object we interact with */
     private SurfaceHolder mSurfaceHolder;
 
-    private int scr_width = 720; //getWidth();         // width of game screen
+    private int scr_width  = 720; //getWidth();         // width of game screen
     private int scr_height = 1280; //getHeight();	    // height of game screen
-    private int x_bound = scr_width/12;        // biên ngang cho màn hình game
-    private int y_bound = scr_height/8;        // biên trên dưới cho màn hình game.
+    private int x_bound = 32;        // biên ngang cho màn hình game
+    private int y_bound = 80;        // biên trên dưới cho màn hình game.
 
     // game scene or game screen instead
 
@@ -112,11 +115,29 @@ class SBFThread extends Thread {
         super();
     }
 
+    public SBFThread(Context context) {
+        super();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        this.scr_width = size.x;
+        this.scr_height = size.y;
+    }
+
     public SBFThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
         // get handles to some important objects
         mSurfaceHolder = surfaceHolder;
         mHandler = handler;
         myContext = context;
+
+        // set lai screen size
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        this.scr_width = size.x;
+        this.scr_height = size.y;
 
         Resources res = context.getResources();
         mHeroMoving = sbf.loadHero(mHeroMoving, myContext); // TODO create a method handle all load sprite with number of img
@@ -141,15 +162,15 @@ class SBFThread extends Thread {
 
         // cache handles to our key sprites & other drawables
         mTitleImage = BitmapFactory.decodeResource(res, R.drawable.title_bg_hori);
-        mTitleImage = Bitmap.createScaledBitmap(mTitleImage, scr_width, (int)(scr_height/2), true);
+        mTitleImage = Bitmap.createScaledBitmap(mTitleImage, scr_width, (int) (scr_height / 2), true);
 
         // load background image as a Bitmap instead of a Drawable b/c
         // we don't need to transform it and it's faster to draw this way
         mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.bg);
         mUi = BitmapFactory.decodeResource(res, R.drawable.ui);
-        mUi = Bitmap.createScaledBitmap(mUi, scr_width, 110, true);
+        mUi = Bitmap.createScaledBitmap(mUi, scr_width, 110 * scr_height / 1280, true); // Ti le man hinh
         mBg2 = BitmapFactory.decodeResource(res, R.drawable.bg_2);
-        mBg2 = Bitmap.createScaledBitmap(mBg2, scr_width, 148, true);
+        mBg2 = Bitmap.createScaledBitmap(mBg2, scr_width, 148 * scr_height / 1280, true);
 
         allclear = BitmapFactory.decodeResource(res, R.drawable.allclear);
         allclear = Bitmap.createScaledBitmap(allclear, scr_width, (int)(scr_height/2), true);
@@ -339,6 +360,11 @@ class SBFThread extends Thread {
             mBackgroundImage = Bitmap.createScaledBitmap(mBackgroundImage, width, height, true);
             // ui TODO
         }
+    }
+
+    public void setScreenSize(int width, int height) {  // set co man hinh theo size View truyen sang
+        this.scr_width = width;
+        this.scr_height = height;
     }
 
     /**
