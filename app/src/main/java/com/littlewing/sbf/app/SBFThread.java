@@ -181,11 +181,11 @@ class SBFThread extends Thread {
 
         v = BitmapFactory.decodeResource(res, R.drawable.v);
 
-        Bomb donald_bomd = new Bomb(50, 50);
-        donald = new Donald(50, 50, mBoss);
+        Bomb donald_bomd = new Bomb(350, 350); // hard code
+        donald = new Donald(350, 350, mBoss);
         donald.setBomb(donald_bomd);
         for(int kk = 0; kk < 3; kk ++) {
-            luie[kk] = new Donald (60*kk, kk*25, mEnemy);
+            luie[kk] = new Donald (60*kk, kk*25 + 200, mEnemy); // hard code
         }
         bomb = new Bomb (50, 30, context);
         bomb.setImage(item);
