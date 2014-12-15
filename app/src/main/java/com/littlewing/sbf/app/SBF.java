@@ -27,6 +27,8 @@ public class SBF extends Activity implements View.OnClickListener {
     /** A handle to the View in which the game is running. */
     private SBF_View mSBF_View;
 
+    public static Button start = null;
+
     public void SBF() {
         mSBFThread = new SBFThread();
     }
@@ -92,8 +94,14 @@ public class SBF extends Activity implements View.OnClickListener {
         // tell system to use the layout defined in our XML file
         setContentView(R.layout.activity_sbf);
 
-        Button start = (Button) findViewById(R.id.gogo);
-        start.setOnClickListener(this);
+        start = (Button) findViewById(R.id.gogo);
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSBFThread.setState(mSBFThread.STATE_RUNNING);
+                start.setVisibility(View.GONE);
+            }
+        });
 
         // get handles to the SBF_View from XML, and its SBFThread
         mSBF_View = (SBF_View) findViewById(R.id.sbf);
@@ -149,6 +157,6 @@ public class SBF extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         // this is the first screen
         // TODO change button state follow gamestate like AA
-            mSBFThread.setState(mSBFThread.STATE_RUNNING);
+        mSBFThread.setState(mSBFThread.STATE_RUNNING);
     }
 }
