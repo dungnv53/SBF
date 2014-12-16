@@ -104,11 +104,10 @@ public class Donald {
 		int i = get_random(6);           // random vị trí enemy, vị trí enemy random chưa được khéo như bản J2ME gốc.
 	      if ((i == 0) || (i == 1)) {
 	    	  if (this.dn_x > 0 && this.dn_x < (screen_width-h_bound)) {  	// eo ro INHERITE COMMON nen cho luon 160 thay 
-	    		  // vi BOARD_WIDTH
+	    	  // vi BOARD_WIDTH
 	    	  // dung la la fai them border = alient_width / 2
 	    	  	this.dn_x += (e_boss_move_dir/3);
-	    	  }
-	    	  else {
+	    	  } else {
 	    		  this.dn_x = 0;
 	    	  }
 	    	  if (this.dn_y > 30 && this.dn_y < screen_height/5) {       // enemy chỉ được di chuyển trong 1 khoảng 1/5 phía trên màn hình. 
@@ -117,9 +116,7 @@ public class Donald {
 	    	  else {
 	    		  this.dn_y = 20;
 	    	  }
-	      	}
-	      else if ((i == 2) || (i == 3))
-	      {
+	      	} else if ((i == 2) || (i == 3)) {
 	    	  if (this.dn_x > 0 && this.dn_x < (screen_width-w_bound)) {  	// eo ro INHERITE COMMON nen cho luon 160 thay 
 	    		  this.dn_x -= (e_boss_move_dir/3);	// thay vi direction
 	    	  }
@@ -143,12 +140,19 @@ public class Donald {
 	    		  this.dn_y = 20;
 	    	  }
 	      }
+
+         // TODO doan tren lay trong code J2ME, ko ro logic nen tam clone.
   }
   public void move() { // when Donald move, we change idx 0 1 loop repeat
-	  if (this.idx == 0)
-		  this.idx = 1;
-	  else if (this.idx == 1)
-		  this.idx = 0;
+      // TODO enemy flick qua nhanh
+      if(this.idx == 0)
+          this.idx = 1;
+      else if(this.idx == 1)
+          this.idx = 3;
+      else if(this.idx == 3)
+          this.idx = 4;
+      else if(this.idx == 4)
+          this.idx = 0;
   }
   public void attact() { // when Donald prepare firing, we set idx to 2 and 3 reseverse
 	  if (this.idx == 2)
@@ -213,5 +217,13 @@ public class Donald {
 		this.hp = 56;
 		this.max_hp = 56;
 	}
+
+    // Check if number x in a range
+    public boolean inRange(int xCheck, int x, int range) {
+        if((xCheck <= x+range) && (xCheck >= x)) {
+            return true;
+        }
+        return false;
+    }
 
 }
