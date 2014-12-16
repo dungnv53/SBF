@@ -426,7 +426,7 @@ class SBFThread extends Thread {
     public void drawEnemy(Canvas cv, Donald huey, int snow_e_y_idx, int rand_donald_y, int h_y_step) {
         test_snow_e_y [snow_e_y_idx] += 6;
         if(test_snow_e_y[snow_e_y_idx] >= scr_height*2/3)
-            test_snow_e_y[snow_e_y_idx] = 70;
+            test_snow_e_y[snow_e_y_idx] = 300; // hard code
 
         // TODO cho shadow va snow tach xa dan theo time
         // them gia toc chut it cho snow bay xa nhanh dan
@@ -464,8 +464,8 @@ class SBFThread extends Thread {
             canvas.drawBitmap(mHeroMoving[Hero.getIdx()], Hero.getDonaldX(), Hero.getDonaldY(), null);
 
             if (donald.getHp() > 0) {
-                canvas.drawBitmap(donald.getBossImage(), donald.getDonaldX(), 85, null);
-                canvas.drawRect((float) donald.getDonaldX()-5, 126 - (donald.getHp()*9/11), (float) donald.getDonaldX(), 126, paint);
+                canvas.drawBitmap(donald.getBossImage(), donald.getDonaldX(), 310, null); // hard code 310+40 = 350 HP Rect
+                canvas.drawRect((float) donald.getDonaldX()-5, 360 - (donald.getHp()*9/11), (float) donald.getDonaldX(), 360, paint);
             }
             for(int ii = 0; ii < 3; ii ++) {
                 luie[ii].act(1, scr_width, scr_height);
@@ -506,7 +506,7 @@ class SBFThread extends Thread {
             if (donald.getHp() >= 0) {
                 donald.getBomb().throwDownY(-6); // throw down minus like throw up
                 if (donald.getBomb().getY() >= (scr_height-y_bound))    // biên cho item bay tới.
-                    donald.getBomb().setY(80);
+                    donald.getBomb().setY(380);
 
                 canvas.drawBitmap(snow_h, donald.getDonaldX() + sbf.get_random1(10), donald.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
                 canvas.drawBitmap(snow_shadow, donald.getDonaldX(), donald.getBomb().getY(), null);

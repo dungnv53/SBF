@@ -32,9 +32,8 @@
            android:text="go.."
            android:id="@+id/gogo"
            android:onClick="startSBFActivity"
-           android:layout_alignParentBottom="true"
-           android:layout_toLeftOf="@+id/text"
-           android:layout_toStartOf="@+id/text" />
+           android:layout_centerVertical="true"
+           android:layout_centerHorizontal="true" />
 
    </RelativeLayout>
 
