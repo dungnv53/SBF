@@ -17,7 +17,7 @@ public class Donald {
 
     private int state; // nhan vat dinh effect
 	
-	private int e_boss_move_dir = 10;
+	private int e_boss_move_dir = 18; // hard code
 	private int e_boss_x = 0;
 	Random rnd = new Random();
 	private Bomb item = new Bomb (dn_x, dn_y + 20);

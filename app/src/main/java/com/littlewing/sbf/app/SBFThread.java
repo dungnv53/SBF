@@ -425,8 +425,11 @@ class SBFThread extends Thread {
     * */
     public void drawEnemy(Canvas cv, Donald huey, int snow_e_y_idx, int rand_donald_y, int h_y_step) {
         test_snow_e_y [snow_e_y_idx] += 6;
-        if(test_snow_e_y[snow_e_y_idx] >= scr_height*2/3)
+        if(test_snow_e_y[snow_e_y_idx] >= scr_height*2/3) {
+            // luie stop acceleration
             test_snow_e_y[snow_e_y_idx] = 300; // hard code
+            huey.getBomb().setPower(0);
+        }
 
         // TODO cho shadow va snow tach xa dan theo time
         // them gia toc chut it cho snow bay xa nhanh dan
@@ -504,16 +507,7 @@ class SBFThread extends Thread {
             }
             // Boss attack
             if (donald.getHp() >= 0) {
-                donald.getBomb().throwDownY(-6); // throw down minus like throw up
-                if (donald.getBomb().getY() >= (scr_height-y_bound))    // biên cho item bay tới.
-                    donald.getBomb().setY(380);
-
-                canvas.drawBitmap(snow_h, donald.getDonaldX() + sbf.get_random1(10), donald.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
-                canvas.drawBitmap(snow_shadow, donald.getDonaldX(), donald.getBomb().getY(), null);
-                if ((Hero.getDonaldX() + 12) >= donald.getDonaldX() && ((Hero.getDonaldX() - 12) <= donald.getDonaldX())
-                        && (Hero.getDonaldY() + 12 >= donald.getBomb().getY()) && (Hero.getDonaldY() - 12 <= donald.getBomb().getY())) {
-                    Hero.loseHp(4);
-                }
+                enemy_attack(canvas);
             }
 
             if (Hero.getHp() <= 0) {   // hero die
@@ -629,6 +623,27 @@ class SBFThread extends Thread {
 //				SBF_View.this.invalidate();
         }
     }
+
+    public void enemy_attack(Canvas canvas) {
+        donald.getBomb().throwDownY(-6); // throw down minus like throw up
+        if (donald.getBomb().getY() >= (scr_height-y_bound)) {    // biên cho item bay tới.
+            donald.getBomb().setY(380); // reset bomb position
+            donald.getBomb().setPower(0);
+        }
+
+        // when donald x,y change, so fireTarget become wrong on start, end ?
+        // how to fix only one start, end ?
+        // power of fire
+        donald.getBomb().setPower(2);
+        donald.getBomb().fireTarget(new Point(donald.getDonaldX(), donald.getDonaldY()), new Point(Hero.getDonaldX(), Hero.getDonaldY()));
+        canvas.drawBitmap(snow_h, donald.getBomb().getX() + sbf.get_random1(10), donald.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
+        canvas.drawBitmap(snow_shadow, donald.getBomb().getX(), donald.getBomb().getY(), null);
+        if ((Hero.getDonaldX() + 12) >= donald.getDonaldX() && ((Hero.getDonaldX() - 12) <= donald.getDonaldX())
+                && (Hero.getDonaldY() + 12 >= donald.getBomb().getY()) && (Hero.getDonaldY() - 12 <= donald.getBomb().getY())) {
+            Hero.loseHp(4);
+        }
+    }
+
     /**
      * Figures the lander state (x, y, fuel, ...) based on the passage of
      * realtime. Does not invalidate(). Called at the start of draw().
