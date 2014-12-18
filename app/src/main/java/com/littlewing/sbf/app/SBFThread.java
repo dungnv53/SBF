@@ -55,6 +55,7 @@ class SBFThread extends Thread {
     // ui
     private Bitmap mUi;
     private Bitmap mBg2;
+    private Bitmap mFire;
 
     /** Message handler used by thread to interact with TextView */
     private Handler mHandler;
@@ -175,6 +176,8 @@ class SBFThread extends Thread {
         mUi = Bitmap.createScaledBitmap(mUi, scr_width, 110 * scr_height / 1280, true); // Ti le man hinh
         mBg2 = BitmapFactory.decodeResource(res, R.drawable.bg_2);
         mBg2 = Bitmap.createScaledBitmap(mBg2, scr_width, 148 * scr_height / 1280, true);
+
+        mFire = BitmapFactory.decodeResource(res, R.drawable.snow);
 
         allclear = BitmapFactory.decodeResource(res, R.drawable.allclear);
         allclear = Bitmap.createScaledBitmap(allclear, scr_width, (int)(scr_height/2), true);
@@ -449,6 +452,8 @@ class SBFThread extends Thread {
             canvas.drawBitmap(mBackgroundImage, 0, 0, null);
             canvas.drawBitmap(mUi, 0, scr_height-mUi.getHeight(), null);
             canvas.drawBitmap(mBg2, 0, 0, null);
+            canvas.drawBitmap(mFire, scr_width - 142, scr_height - (110 * scr_height / 1280) - 70*2, null); // hard code , snow size is 68x68
+            // fire button abow ui about 80px (~fire size)
 //            boss_attack(canvas);
 //            draw_enemy(canvas);
             donald.act(1, scr_width, scr_height);
