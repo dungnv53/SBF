@@ -19,6 +19,8 @@ public class Bomb {
     private int power; // power of fire
     private int gap; // snow_gap
 
+    // need flag is_fired, is_firing ?
+
     private int acceleration;
 
     public Bomb(int x, int y, Context context) {
@@ -111,13 +113,19 @@ public class Bomb {
     // fire at enemy
     // maybe boolean return
     public void fireTarget(Point start, Point dest) {
-        int step = 12; // 12 px step
+        int step = 2; // 12 px step
         this.acceleration += power;
         // do somethg
         float angle = getRadAngle(start, dest);
         // acceleration bomb
         this.bom_x += (step+this.acceleration)*Math.tan(angle);
         this.bom_y += (step+this.acceleration)/Math.tan(angle);
+        if(this.bom_y > 1000) {
+            this.bom_y = 300;
+        }
+        if(this.bom_x > 700) {
+            this.bom_x = 200; // donald x
+        }
     }
 
 

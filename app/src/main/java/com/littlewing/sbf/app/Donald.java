@@ -21,6 +21,8 @@ public class Donald {
 	private int e_boss_x = 0;
 	Random rnd = new Random();
 	private Bomb item = new Bomb (dn_x, dn_y + 20);
+
+    // fire_time
 	
 	public void Donald(int x, int y) {
         this.dn_x = x;
