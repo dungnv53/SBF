@@ -126,7 +126,7 @@ class SBFThread extends Thread {
         this.scr_width = size.x;
         this.scr_height = size.y;
 
-        this.Hero = new Donald((scr_width/2) - x_bound, scr_height*2/3);
+        this.Hero = new Donald((scr_width/2) - x_bound, scr_height*2/3+120); // Nen de align 150 theo bottom ui
     }
 
     public SBFThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
@@ -406,8 +406,8 @@ class SBFThread extends Thread {
      */
     public void hitTarget(Donald dn, int fire_step, int hp_lose) {
         int mLeft = Hero.getDonaldX() + 20; // vi snow lech ra 1 chut
-        if ((dn.getDonaldX()+20 >= mLeft) && (dn.getDonaldX() - 10) <= mLeft) {
-            if( (dn.getDonaldY()+10 >= (180 - 12*fire_step)) && (dn.getDonaldY()-20) <= (180 - 12*fire_step)) {
+        if ((dn.getBomb().getX()+20 >= mLeft) && (dn.getBomb().getX() - 10) <= mLeft) {
+            if( (dn.getBomb().getY()+10 >= (180 - 12*fire_step)) && (dn.getBomb().getY()-20) <= (180 - 12*fire_step)) {
                 dn.setHp(dn.getHp() - hp_lose);
                 m_snow_fire = 0;
             }
@@ -434,12 +434,12 @@ class SBFThread extends Thread {
 
         if ((Hero.getDonaldX() - 8) <= huey.getDonaldX() && ((Hero.getDonaldX() + 8) >= huey.getDonaldX())
                 && (Hero.getDonaldY() - h_y_step <= test_snow_e_y[snow_e_y_idx]) && (Hero.getDonaldY() + h_y_step >= test_snow_e_y[snow_e_y_idx])) {
-            Hero.setHp(Hero.getHp()-2);
+            Hero.setHp(Hero.getHp()-2); // hero lose HP ?
         }
-        if ( (Hero.getDonaldX() <= (huey.getDonaldX() + 8)) && (Hero.getDonaldX() >= (huey.getDonaldX() - 22))) {
+        if ( (Hero.getBomb().getX() <= (huey.getDonaldX() + 8)) && (Hero.getBomb().getX() >= (huey.getDonaldX() - 22))) {
             if ( (Hero.getBomb().getX() <= (huey.getDonaldY() + 30)) && (Hero.getBomb().getY() >= (huey.getDonaldY() - 10))) {
-                huey.setHp(huey.getHp() - 2);
-                Hero.getBomb().setY(200); // fai set lai snow_y ko thi hp mat lien tuc
+                huey.loseHp(4);
+                Hero.getBomb().setY(scr_height*2/3); // fai set lai snow_y ko thi hp mat lien tuc
             }
         }
     }
@@ -486,6 +486,7 @@ class SBFThread extends Thread {
             if (m_snow_fire == 10) {
                 int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
                 Hero.getBomb().throwDownY(12);
+                Hero.setIdx(2);  // hero throwing
                 if (Hero.getBomb().getY() < 25) Hero.getBomb().setY((scr_height-y_bound));
                 canvas.drawBitmap(bomb.getImage(2), Hero.getDonaldX() + 22, Hero.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
                 canvas.drawBitmap(snow_shadow, Hero.getDonaldX() + 22, Hero.getBomb().getY(), null);

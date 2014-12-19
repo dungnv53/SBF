@@ -113,6 +113,7 @@ public class Bomb {
     // fire at enemy
     // maybe boolean return
     public void fireTarget(Point start, Point dest) {
+        this.setDestroyed(false);
         int step = 2; // 12 px step
         this.acceleration += power;
         // do somethg
@@ -122,9 +123,11 @@ public class Bomb {
         this.bom_y += (step+this.acceleration)/Math.tan(angle);
         if(this.bom_y > 1000) {
             this.bom_y = 300;
+            this.setDestroyed(true);
         }
         if(this.bom_x > 700) {
             this.bom_x = 200; // donald x
+            this.setDestroyed(true);
         }
     }
 
