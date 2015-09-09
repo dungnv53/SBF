@@ -13,6 +13,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -234,6 +235,7 @@ class SBFThread extends Thread {
             Canvas c = null;
             try {
                 c = mSurfaceHolder.lockCanvas(null);
+
                 synchronized (mSurfaceHolder) {
                     if (mMode == STATE_RUNNING) {
                         updatePhysics();
@@ -418,6 +420,7 @@ class SBFThread extends Thread {
      * TODO nhieu so hardcode
     * */
     public void drawEnemy(Canvas cv, Donald huey, int snow_e_y_idx, int rand_donald_y, int h_y_step) {
+        Log.e(this.getClass().getName(), " Fuck u: ");
         test_snow_e_y [snow_e_y_idx] += 6;
         if(test_snow_e_y[snow_e_y_idx] >= scr_height*2/3) {
             // luie stop acceleration
@@ -438,7 +441,8 @@ class SBFThread extends Thread {
         }
         if ( (Hero.getBomb().getX() <= (huey.getDonaldX() + 8)) && (Hero.getBomb().getX() >= (huey.getDonaldX() - 22))) {
             if ( (Hero.getBomb().getX() <= (huey.getDonaldY() + 30)) && (Hero.getBomb().getY() >= (huey.getDonaldY() - 10))) {
-                huey.loseHp(4);
+                Log.e(this.getClass().getName(), " Enemy Lose hp: " +huey.getHp());
+                huey.loseHp(400); // fix me
                 Hero.getBomb().setY(scr_height*2/3); // fai set lai snow_y ko thi hp mat lien tuc
             }
         }
@@ -492,14 +496,16 @@ class SBFThread extends Thread {
                 canvas.drawBitmap(snow_shadow, Hero.getDonaldX() + 22, Hero.getBomb().getY(), null);
 
                 for (int ii = 0; ii <= (mTop/12); ii ++) {
-                    hitTarget(donald, ii, 1);
-                    hitTarget(luie[0], ii, 1);
-                    hitTarget(luie[1], ii, 1);
-                    hitTarget(luie[2], ii, 1);
+                    hitTarget(donald, ii, 100);
+                    hitTarget(luie[0], ii, 100);
+                    hitTarget(luie[1], ii, 100);
+                    hitTarget(luie[2], ii, 100); // fix me
 
                     m_snow_fire = 0;
                 } // end for loop
             }
+            mMode = STATE_WIN; // fix me
+
             if (donald.getHp() <= 0) {  // WINNING
                 if (luie[0].getHp() <= 0 && (luie[1].getHp() <= 0) && (luie[2].getHp() <= 0)) {
                     mMode = STATE_WIN;
