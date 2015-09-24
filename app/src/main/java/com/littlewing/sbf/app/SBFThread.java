@@ -86,12 +86,12 @@ class SBFThread extends Thread {
 
     // vị trí ngang của hero.
     //(scr_height/2-y_bound);   // vị trí dưới của hero (player).
-    private Donald Hero;
+    private Sprite Hero;
 
     private int m_snow_fire = 0;
 
-    private Donald donald;
-    private Donald[] luie = new Donald[3];
+//    private Sprite donald;
+    private Sprite[] luie = new Sprite[3];
     Bomb bomb;
     // Vi tri bat dau nem cua boss.
     private Bitmap allclear;
@@ -127,7 +127,7 @@ class SBFThread extends Thread {
         this.scr_width = size.x;
         this.scr_height = size.y;
 
-        this.Hero = new Donald((scr_width/2) - x_bound, scr_height*2/3+120); // Nen de align 150 theo bottom ui
+        this.Hero = new Sprite((scr_width/2) - x_bound, scr_height*2/3+120); // Nen de align 150 theo bottom ui
     }
 
     public SBFThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
@@ -144,7 +144,7 @@ class SBFThread extends Thread {
         this.scr_width = size.x;
         this.scr_height = size.y;
 
-        this.Hero = new Donald((scr_width/2) - x_bound, scr_height*2/3);
+        this.Hero = new Sprite((scr_width/2) - x_bound, scr_height*2/3);
 
         Resources res = context.getResources();
         mHeroMoving = sbf.loadHero(mHeroMoving, myContext); // TODO create a method handle all load sprite with number of img
@@ -188,10 +188,10 @@ class SBFThread extends Thread {
         v = BitmapFactory.decodeResource(res, R.drawable.v);
 
         Bomb donald_bomd = new Bomb(350, 350); // hard code
-        donald = new Donald(350, 350, mBoss);
-        donald.setBomb(donald_bomd);
+//        donald = new Sprite(350, 350, mBoss);
+//        donald.setBomb(donald_bomd);
         for(int kk = 0; kk < 3; kk ++) {
-            luie[kk] = new Donald (60*kk, kk*25 + 200, mEnemy); // hard code
+            luie[kk] = new Sprite (60*kk, kk*25 + 200, mEnemy); // hard code
         }
         bomb = new Bomb (50, 30, context);
         bomb.setImage(item);
@@ -269,8 +269,8 @@ class SBFThread extends Thread {
     public Bundle saveState(Bundle map) {
         synchronized (mSurfaceHolder) {
             if (map != null) {
-                map.putDouble(KEY_X, Double.valueOf(Hero.getDonaldX()));
-                map.putDouble(KEY_Y, Double.valueOf(Hero.getDonaldY()));
+                map.putDouble(KEY_X, Double.valueOf(Hero.getPosX()));
+                map.putDouble(KEY_Y, Double.valueOf(Hero.getPosY()));
             }
         }
         return map;
@@ -406,8 +406,8 @@ class SBFThread extends Thread {
      * mTop: position reset for enemy.
      * TODO: move to class Donlad instead of lie here.
      */
-    public void hitTarget(Donald dn, int fire_step, int hp_lose) {
-        int mLeft = Hero.getDonaldX() + 20; // vi snow lech ra 1 chut
+    public void hitTarget(Sprite dn, int fire_step, int hp_lose) {
+        int mLeft = Hero.getPosX() + 20; // vi snow lech ra 1 chut
         if ((dn.getBomb().getX()+20 >= mLeft) && (dn.getBomb().getX() - 10) <= mLeft) {
             if( (dn.getBomb().getY()+10 >= (180 - 12*fire_step)) && (dn.getBomb().getY()-20) <= (180 - 12*fire_step)) {
                 dn.setHp(dn.getHp() - hp_lose);
@@ -419,8 +419,8 @@ class SBFThread extends Thread {
     /* Draw rectangle | show hp (percent) like in other game: AOE (horizontal).
      * TODO nhieu so hardcode
     * */
-    public void drawEnemy(Canvas cv, Donald huey, int snow_e_y_idx, int rand_donald_y, int h_y_step) {
-        Log.e(this.getClass().getName(), " Fuck u: ");
+    public void drawEnemy(Canvas cv, Sprite huey, int snow_e_y_idx, int rand_donald_y, int h_y_step) {
+//        Log.e(this.getClass().getName(), " Fuck u: ");
         test_snow_e_y [snow_e_y_idx] += 6;
         if(test_snow_e_y[snow_e_y_idx] >= scr_height*2/3) {
             // luie stop acceleration
@@ -430,19 +430,19 @@ class SBFThread extends Thread {
 
         // TODO cho shadow va snow tach xa dan theo time
         // them gia toc chut it cho snow bay xa nhanh dan
-        huey.getBomb().fireTarget(new Point(huey.getBomb().getX(), huey.getBomb().getY()), new Point(Hero.getDonaldX(), Hero.getDonaldY()));
-        huey.getBomb().fireTarget(new Point(huey.getBomb().getX(), test_snow_e_y[snow_e_y_idx]-22 + rand_donald_y), new Point(Hero.getDonaldX(), Hero.getDonaldY()));
+        huey.getBomb().fireTarget(new Point(huey.getBomb().getX(), huey.getBomb().getY()), new Point(Hero.getPosX(), Hero.getPosY()));
+        huey.getBomb().fireTarget(new Point(huey.getBomb().getX(), test_snow_e_y[snow_e_y_idx]-22 + rand_donald_y), new Point(Hero.getPosX(), Hero.getPosY()));
         cv.drawBitmap(snow_h, huey.getBomb().getX(), test_snow_e_y[snow_e_y_idx]-22 + rand_donald_y, null); // 22 la distance giua snow va shadow
         cv.drawBitmap(snow_shadow, huey.getBomb().getX(), test_snow_e_y[snow_e_y_idx], null);
 
-        if ((Hero.getDonaldX() - 8) <= huey.getDonaldX() && ((Hero.getDonaldX() + 8) >= huey.getDonaldX())
-                && (Hero.getDonaldY() - h_y_step <= test_snow_e_y[snow_e_y_idx]) && (Hero.getDonaldY() + h_y_step >= test_snow_e_y[snow_e_y_idx])) {
+        if ((Hero.getPosX() - 8) <= huey.getPosX() && ((Hero.getPosX() + 8) >= huey.getPosX())
+                && (Hero.getPosY() - h_y_step <= test_snow_e_y[snow_e_y_idx]) && (Hero.getPosY() + h_y_step >= test_snow_e_y[snow_e_y_idx])) {
             Hero.setHp(Hero.getHp()-2); // hero lose HP ?
         }
-        if ( (Hero.getBomb().getX() <= (huey.getDonaldX() + 8)) && (Hero.getBomb().getX() >= (huey.getDonaldX() - 22))) {
-            if ( (Hero.getBomb().getX() <= (huey.getDonaldY() + 30)) && (Hero.getBomb().getY() >= (huey.getDonaldY() - 10))) {
+        if ( (Hero.getBomb().getX() <= (huey.getPosX() + 8)) && (Hero.getBomb().getX() >= (huey.getPosX() - 22))) {
+            if ( (Hero.getBomb().getX() <= (huey.getPosY() + 30)) && (Hero.getBomb().getY() >= (huey.getPosY() - 10))) {
                 Log.e(this.getClass().getName(), " Enemy Lose hp: " +huey.getHp());
-                huey.loseHp(400); // fix me
+                huey.loseHp(12); // fix me
                 Hero.getBomb().setY(scr_height*2/3); // fai set lai snow_y ko thi hp mat lien tuc
             }
         }
@@ -465,23 +465,23 @@ class SBFThread extends Thread {
 
 //            boss_attack(canvas);
 //            draw_enemy(canvas);
-            donald.act(1, scr_width, scr_height);
-            donald.move();
+//            donald.act(1, scr_width, scr_height);
+//            donald.move();
             Paint paint = sbf.newPaint(Color.RED, Paint.Style.FILL_AND_STROKE, 0);
 
-            canvas.drawBitmap(mHeroMoving[Hero.getIdx()], Hero.getDonaldX(), Hero.getDonaldY(), null);
+            canvas.drawBitmap(mHeroMoving[Hero.getIdx()], Hero.getPosX(), Hero.getPosY(), null);
 
-            if (donald.getHp() > 0) {
-                drawBossHp(donald, canvas, paint);
-            }
+//            if (donald.getHp() > 0) {
+//                drawBossHp(donald, canvas, paint);
+//            }
             for(int ii = 0; ii < 3; ii ++) {
                 luie[ii].act(1, scr_width, scr_height);
                 luie[ii].move();
                 luie[ii].setBomb(bomb);
-                luie[ii].getBomb().dropBomb(luie[ii].getDonaldY(), 3/4*scr_height);
+                luie[ii].getBomb().dropBomb(luie[ii].getPosY(), 3/4*scr_height);
 
                 if (luie[ii].getHp() > 0) {
-                    drawHpEnemy(luie[ii], canvas, paint); // TODO how to push this method to Donald class
+                    drawHpEnemy(luie[ii], canvas, paint); // TODO how to push this method to Sprite class
                 }
             }
             // Draw the speed gauge, with a two-tone effect
@@ -492,11 +492,11 @@ class SBFThread extends Thread {
                 Hero.getBomb().throwDownY(12);
                 Hero.setIdx(2);  // hero throwing
                 if (Hero.getBomb().getY() < 25) Hero.getBomb().setY((scr_height-y_bound));
-                canvas.drawBitmap(bomb.getImage(2), Hero.getDonaldX() + 22, Hero.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
-                canvas.drawBitmap(snow_shadow, Hero.getDonaldX() + 22, Hero.getBomb().getY(), null);
+                canvas.drawBitmap(bomb.getImage(2), Hero.getPosX() + 22, Hero.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
+                canvas.drawBitmap(snow_shadow, Hero.getPosX() + 22, Hero.getBomb().getY(), null);
 
                 for (int ii = 0; ii <= (mTop/12); ii ++) {
-                    hitTarget(donald, ii, 100);
+//                    hitTarget(donald, ii, 100);
                     hitTarget(luie[0], ii, 100);
                     hitTarget(luie[1], ii, 100);
                     hitTarget(luie[2], ii, 100); // fix me
@@ -504,17 +504,18 @@ class SBFThread extends Thread {
                     m_snow_fire = 0;
                 } // end for loop
             }
-            mMode = STATE_WIN; // fix me
 
-            if (donald.getHp() <= 0) {  // WINNING
+//            if (donald.getHp() <= 0) {  // WINNING
                 if (luie[0].getHp() <= 0 && (luie[1].getHp() <= 0) && (luie[2].getHp() <= 0)) {
-                    mMode = STATE_WIN;
-                }
+                    Log.e(this.getClass().getName(), " Zigg enermy double kill: ");
+//                    canvas.drawColor(Color.BLACK);
+                mMode = STATE_WIN;
             }
-            // Boss attack
-            if (donald.getHp() >= 0) {
-                enemy_attack(canvas);
-            }
+//            }
+//            // Boss attack
+//            if (donald.getHp() >= 0) {
+//                enemy_attack(canvas);
+//            }
 
             if (Hero.getHp() <= 0) {   // hero die
                 mMode = STATE_LOSE;
@@ -546,19 +547,19 @@ class SBFThread extends Thread {
             } else {
 //                if(mpx != null) mpx.stop(soundIds[10]);
             }
-            canvas.drawBitmap(mHeroMoving[6], Hero.getDonaldX(), Hero.getDonaldY(), null);
+            canvas.drawBitmap(mHeroMoving[6], Hero.getPosX(), Hero.getPosY(), null);
             String text = "You lose ...";
             Paint p = new Paint();
             p.setColor(Color.RED);
-            canvas.drawText(text, Hero.getDonaldX() - 5, Hero.getDonaldY() - 40, p);
+            canvas.drawText(text, Hero.getPosX() - 5, Hero.getPosY() - 40, p);
 //            	canvas.restore();
         } else  if(mMode == STATE_WIN) {
-            win_sound_flag++; if(win_sound_flag ==1) {
+//            win_sound_flag++; if(win_sound_flag ==1) {
 //                mpx.play(soundIds[9], 1, 1, 1, 0, 1);
-            } else {
+//            } else {
 //                mpx.stop(soundIds[9]);
-            };
-
+//            }
+            Log.e(this.getClass().getName(), " Teemo on duty: ");
             String text = "Victory !... \n";
             Paint p = sbf.newPaint(Color.RED, null, 35);
             String text2 = "Acquired 32 golds.";
@@ -608,33 +609,33 @@ class SBFThread extends Thread {
     }
 
     public void enemy_attack(Canvas canvas) {
-        donald.getBomb().throwDownY(-6); // throw down minus like throw up
-        if (donald.getBomb().getY() >= (scr_height-y_bound)) {    // biên cho item bay tới.
-            donald.getBomb().setY(380); // reset bomb position
-            donald.getBomb().setPower(0);
-        }
+//        donald.getBomb().throwDownY(-6); // throw down minus like throw up
+//        if (donald.getBomb().getY() >= (scr_height-y_bound)) {    // biên cho item bay tới.
+//            donald.getBomb().setY(380); // reset bomb position
+//            donald.getBomb().setPower(0);
+//        }
 
         // when donald x,y change, so fireTarget become wrong on start, end ?
         // how to fix only one start, end ?
         // power of fire
-        donald.getBomb().setPower(2);
-        donald.getBomb().fireTarget(new Point(donald.getBomb().getX(), donald.getBomb().getY()), new Point(Hero.getDonaldX(), Hero.getDonaldY()));
-        canvas.drawBitmap(snow_h, donald.getBomb().getX() + sbf.get_random1(10), donald.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
-        canvas.drawBitmap(snow_shadow, donald.getBomb().getX(), donald.getBomb().getY(), null);
-        if ((Hero.getDonaldX() + 12) >= donald.getDonaldX() && ((Hero.getDonaldX() - 12) <= donald.getDonaldX())
-                && (Hero.getDonaldY() + 12 >= donald.getBomb().getY()) && (Hero.getDonaldY() - 12 <= donald.getBomb().getY())) {
-            Hero.loseHp(4);
-        }
+//        donald.getBomb().setPower(2);
+//        donald.getBomb().fireTarget(new Point(donald.getBomb().getX(), donald.getBomb().getY()), new Point(Hero.getPosX(), Hero.getPosY()));
+//        canvas.drawBitmap(snow_h, donald.getBomb().getX() + sbf.get_random1(10), donald.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
+//        canvas.drawBitmap(snow_shadow, donald.getBomb().getX(), donald.getBomb().getY(), null);
+//        if ((Hero.getPosX() + 12) >= donald.getPosX() && ((Hero.getPosX() - 12) <= donald.getPosX())
+//                && (Hero.getPosY() + 12 >= donald.getBomb().getY()) && (Hero.getPosY() - 12 <= donald.getBomb().getY())) {
+//            Hero.loseHp(4);
+//        }
     }
 
-    private void drawHpEnemy(Donald dn, Canvas cv, Paint paint) {
-        cv.drawBitmap(dn.getBossImage(), dn.getDonaldX(), dn.getDonaldY(), null);
-        cv.drawRect((float) dn.getDonaldX()-5, dn.getDonaldY() - (dn.getHp()*4/7) + 30, (float) dn.getDonaldX(), 30 + dn.getDonaldY(), paint);
+    private void drawHpEnemy(Sprite dn, Canvas cv, Paint paint) {
+        cv.drawBitmap(dn.getBossImage(), dn.getPosX(), dn.getPosY(), null);
+        cv.drawRect((float) dn.getPosX()-5, dn.getPosY() - (dn.getHp()*4/7) + 30, (float) dn.getPosX(), 30 + dn.getPosY(), paint);
     }
 
-    private void drawBossHp(Donald donald, Canvas canvas, Paint paint) {
-        canvas.drawBitmap(donald.getBossImage(), donald.getDonaldX(), 310, null); // hard code 310+40 = 350 HP Rect
-        canvas.drawRect((float) donald.getDonaldX()-5, 360 - (donald.getHp()*9/11), (float) donald.getDonaldX(), 360, paint);
+    private void drawBossHp(Sprite donald, Canvas canvas, Paint paint) {
+        canvas.drawBitmap(donald.getBossImage(), donald.getPosX(), 310, null); // hard code 310+40 = 350 HP Rect
+        canvas.drawRect((float) donald.getPosX()-5, 360 - (donald.getHp()*9/11), (float) donald.getPosX(), 360, paint);
     }
 
     /**
@@ -653,12 +654,12 @@ class SBFThread extends Thread {
         int y = (int)event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
-                if (Hero.getDonaldX() > 13 && x < Hero.getDonaldX()) { // tap on left side
+                if (Hero.getPosX() > 13 && x < Hero.getPosX()) { // tap on left side
                     // fix me
-                    // do ham ben kia ko change dc value h_x ... nen can cho ham nay vao Donald
-                    // neu Donald co roi thi lam cach nao tao 1 Object thay vi h_x hard code.
+                    // do ham ben kia ko change dc value h_x ... nen can cho ham nay vao Sprite
+                    // neu Sprite co roi thi lam cach nao tao 1 Object thay vi h_x hard code.
                     m_snow_fire = sbf.heroMove(-12, x, y, scr_width, scr_height, Hero, m_snow_fire);
-                } else if (Hero.getDonaldX() < (scr_width-x_bound) && x >= Hero.getDonaldX()) { // tap on right side
+                } else if (Hero.getPosX() < (scr_width-x_bound) && x >= Hero.getPosX()) { // tap on right side
                     m_snow_fire = sbf.heroMove(12, x, y, scr_width, scr_height, Hero, m_snow_fire);
                 }
                 break;
