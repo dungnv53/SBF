@@ -90,7 +90,7 @@ class SBFThread extends Thread {
 
     private int m_snow_fire = 0;
 
-//    private Sprite donald;
+    private Sprite donald;
     private Sprite[] luie = new Sprite[3];
     Bomb bomb;
     // Vi tri bat dau nem cua boss.
@@ -188,8 +188,8 @@ class SBFThread extends Thread {
         v = BitmapFactory.decodeResource(res, R.drawable.v);
 
         Bomb donald_bomd = new Bomb(350, 350); // hard code
-//        donald = new Sprite(350, 350, mBoss);
-//        donald.setBomb(donald_bomd);
+        donald = new Sprite(350, 350, mBoss);
+        donald.setBomb(donald_bomd);
         for(int kk = 0; kk < 3; kk ++) {
             luie[kk] = new Sprite (60*kk, kk*25 + 200, mEnemy); // hard code
         }
@@ -498,15 +498,15 @@ class SBFThread extends Thread {
 
 //            boss_attack(canvas);
 //            draw_enemy(canvas);
-//            donald.act(1, scr_width, scr_height);
-//            donald.move();
+        donald.act(1, scr_width, scr_height);
+        donald.move();
         Paint paint = sbf.newPaint(Color.RED, Paint.Style.FILL_AND_STROKE, 0);
 
         canvas.drawBitmap(mHeroMoving[Hero.getIdx()], Hero.getPosX(), Hero.getPosY(), null);
 
-//            if (donald.getHp() > 0) {
-//                drawBossHp(donald, canvas, paint);
-//            }
+        if (donald.getHp() > 0) {
+            drawBossHp(donald, canvas, paint);
+        }
         for(int ii = 0; ii < 3; ii ++) {
             luie[ii].act(1, scr_width, scr_height);
             luie[ii].move();
@@ -529,7 +529,7 @@ class SBFThread extends Thread {
             canvas.drawBitmap(snow_shadow, Hero.getPosX() + 22, Hero.getBomb().getY(), null);
 
             for (int ii = 0; ii <= (mTop/12); ii ++) {
-//                    hitTarget(donald, ii, 100);
+                hitTarget(donald, ii, 100);
                 hitTarget(luie[0], ii, 100);
                 hitTarget(luie[1], ii, 100);
                 hitTarget(luie[2], ii, 100); // fix me
@@ -538,18 +538,18 @@ class SBFThread extends Thread {
             } // end for loop
         }
 
-//            if (donald.getHp() <= 0) {  // WINNING
-        if (luie[0].getHp() <= 0 && (luie[1].getHp() <= 0) && (luie[2].getHp() <= 0)) {
-//                    canvas.drawColor(Color.BLACK);
-//                    mMode = STATE_WIN;
-            Log.e(this.getClass().getName(), " Teemo on duty: Victory! ARAM 1");
-            doDrawWinning(canvas);
+        if (donald.getHp() <= 0) {  // WINNING
+            if (luie[0].getHp() <= 0 && (luie[1].getHp() <= 0) && (luie[2].getHp() <= 0)) {
+    //                    canvas.drawColor(Color.BLACK);
+    //                    mMode = STATE_WIN;
+                Log.e(this.getClass().getName(), " Teemo on duty: Victory! ARAM 1");
+                doDrawWinning(canvas);
+            }
         }
-//            }
-//            // Boss attack
-//            if (donald.getHp() >= 0) {
-//                enemy_attack(canvas);
-//            }
+        // Boss attack
+        if (donald.getHp() >= 0) {
+            enemy_attack(canvas);
+        }
 
         if (Hero.getHp() <= 0) {   // hero die
             mMode = STATE_LOSE;
@@ -644,23 +644,23 @@ class SBFThread extends Thread {
     }
 
     public void enemy_attack(Canvas canvas) {
-//        donald.getBomb().throwDownY(-6); // throw down minus like throw up
-//        if (donald.getBomb().getY() >= (scr_height-y_bound)) {    // biên cho item bay tới.
-//            donald.getBomb().setY(380); // reset bomb position
-//            donald.getBomb().setPower(0);
-//        }
+        donald.getBomb().throwDownY(-6); // throw down minus like throw up
+        if (donald.getBomb().getY() >= (scr_height-y_bound)) {    // biên cho item bay tới.
+            donald.getBomb().setY(380); // reset bomb position
+            donald.getBomb().setPower(0);
+        }
 
-        // when donald x,y change, so fireTarget become wrong on start, end ?
-        // how to fix only one start, end ?
-        // power of fire
-//        donald.getBomb().setPower(2);
-//        donald.getBomb().fireTarget(new Point(donald.getBomb().getX(), donald.getBomb().getY()), new Point(Hero.getPosX(), Hero.getPosY()));
-//        canvas.drawBitmap(snow_h, donald.getBomb().getX() + sbf.get_random1(10), donald.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
-//        canvas.drawBitmap(snow_shadow, donald.getBomb().getX(), donald.getBomb().getY(), null);
-//        if ((Hero.getPosX() + 12) >= donald.getPosX() && ((Hero.getPosX() - 12) <= donald.getPosX())
-//                && (Hero.getPosY() + 12 >= donald.getBomb().getY()) && (Hero.getPosY() - 12 <= donald.getBomb().getY())) {
-//            Hero.loseHp(4);
-//        }
+//         when donald x,y change, so fireTarget become wrong on start, end ?
+//         how to fix only one start, end ?
+//         power of fire
+        donald.getBomb().setPower(2);
+        donald.getBomb().fireTarget(new Point(donald.getBomb().getX(), donald.getBomb().getY()), new Point(Hero.getPosX(), Hero.getPosY()));
+        canvas.drawBitmap(snow_h, donald.getBomb().getX() + sbf.get_random1(10), donald.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
+        canvas.drawBitmap(snow_shadow, donald.getBomb().getX(), donald.getBomb().getY(), null);
+        if ((Hero.getPosX() + 12) >= donald.getPosX() && ((Hero.getPosX() - 12) <= donald.getPosX())
+                && (Hero.getPosY() + 12 >= donald.getBomb().getY()) && (Hero.getPosY() - 12 <= donald.getBomb().getY())) {
+            Hero.loseHp(4);
+        }
     }
 
     private void drawHpEnemy(Sprite dn, Canvas cv, Paint paint) {
