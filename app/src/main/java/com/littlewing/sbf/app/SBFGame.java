@@ -18,6 +18,7 @@ public class SBFGame {
         super();
     }
 
+    // M?y hàm này cho ra class khác Sprite hay CharacterController
     public int heroMove(int deltaX, int x, int y, int scr_width, int scr_height, Sprite donald, int m_snow_fire) {
         if(y < scr_height*3/4) { donald.setPosX(donald.getPosX() + deltaX); }
         if(x < scr_width && (x > scr_width*3/4)) {
@@ -104,6 +105,7 @@ public class SBFGame {
 
         return mBmp;
     }
+
 
 
 }

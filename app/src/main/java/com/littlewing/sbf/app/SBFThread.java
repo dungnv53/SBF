@@ -237,14 +237,18 @@ class SBFThread extends Thread {
                 c = mSurfaceHolder.lockCanvas(null);
 
                 synchronized (mSurfaceHolder) {
-                    if (mMode == STATE_RUNNING) {
-                        updatePhysics();
-                        doDraw(c);
-                    } else {
-                        // TODO
-                    }
                 }
                 try{
+                    updatePhysics();
+                    doDraw(c);
+//                    if (mMode == STATE_RUNNING) {
+//                        doDrawRunning(c);
+//                    } else if(mMode == STATE_WIN) {
+//                        doDrawWinning(c);
+//                    }
+//                    else {
+//                        // TODO
+//                    }
                     Thread.sleep(23); // Stune 1 it
                 }catch(InterruptedException e){
                     System.out.println("got interrupted!");
@@ -417,7 +421,7 @@ class SBFThread extends Thread {
     }
 
     /* Draw rectangle | show hp (percent) like in other game: AOE (horizontal).
-     * TODO nhieu so hardcode
+     * TODO nhieu so hardcode, cho qua SBF game cho nhe
     * */
     public void drawEnemy(Canvas cv, Sprite huey, int snow_e_y_idx, int rand_donald_y, int h_y_step) {
 //        Log.e(this.getClass().getName(), " Fuck u: ");
@@ -452,145 +456,176 @@ class SBFThread extends Thread {
      * Mau cua enemy van chua chuan: Hp giam lien tuc nhu kieu loop neu trung dan nhieu
      * GameState reload -> hp cua enemy cung full trog khi hp dang < full.
      * De test -> truoc tien giam nhanh hp de test win state
+     * TODO tách ra các hàm con như bên Snake, BoxJump: doDrawRunning, doDrawReady ...
+     * Trong doDrawRunning cũng chia nhỏ handle cho bên SBFGame như BJ
      */
     public void doDraw(Canvas canvas) {
-        if (mMode == STATE_RUNNING) {
-            canvas.drawBitmap(mBackgroundImage, 0, 0, null);
-            canvas.drawBitmap(mUi, 0, scr_height-mUi.getHeight(), null);
-            canvas.drawBitmap(mBg2, 0, 0, null);
-            canvas.drawBitmap(mFire, scr_width - 142, scr_height - (110 * scr_height / 1280) - 70*2, null); // hard code , snow size is 68x68
-            // fire button abow ui about 80px (~fire size)
-
-            canvas.drawBitmap(mMove, 72, scr_height - (110 * scr_height / 1280) - 70*2, null); // hard code , snow size is 66x72
-
-//            boss_attack(canvas);
-//            draw_enemy(canvas);
-//            donald.act(1, scr_width, scr_height);
-//            donald.move();
-            Paint paint = sbf.newPaint(Color.RED, Paint.Style.FILL_AND_STROKE, 0);
-
-            canvas.drawBitmap(mHeroMoving[Hero.getIdx()], Hero.getPosX(), Hero.getPosY(), null);
-
-//            if (donald.getHp() > 0) {
-//                drawBossHp(donald, canvas, paint);
-//            }
-            for(int ii = 0; ii < 3; ii ++) {
-                luie[ii].act(1, scr_width, scr_height);
-                luie[ii].move();
-                luie[ii].setBomb(bomb);
-                luie[ii].getBomb().dropBomb(luie[ii].getPosY(), 3/4*scr_height);
-
-                if (luie[ii].getHp() > 0) {
-                    drawHpEnemy(luie[ii], canvas, paint); // TODO how to push this method to Sprite class
-                }
+        if (mMode == STATE_RUNNING) { //state
+//            doDrawRunning(canvas);
+            try {
+                doDrawRunning(canvas);
+            } catch(NullPointerException null_p_e) {
+                System.exit(1);
+            } finally {
+                doDrawRunning(canvas);
             }
-            // Draw the speed gauge, with a two-tone effect
-            canvas.save();
-
-            if (m_snow_fire == 10) {
-                int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
-                Hero.getBomb().throwDownY(12);
-                Hero.setIdx(2);  // hero throwing
-                if (Hero.getBomb().getY() < 25) Hero.getBomb().setY((scr_height-y_bound));
-                canvas.drawBitmap(bomb.getImage(2), Hero.getPosX() + 22, Hero.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
-                canvas.drawBitmap(snow_shadow, Hero.getPosX() + 22, Hero.getBomb().getY(), null);
-
-                for (int ii = 0; ii <= (mTop/12); ii ++) {
-//                    hitTarget(donald, ii, 100);
-                    hitTarget(luie[0], ii, 100);
-                    hitTarget(luie[1], ii, 100);
-                    hitTarget(luie[2], ii, 100); // fix me
-
-                    m_snow_fire = 0;
-                } // end for loop
-            }
-
-//            if (donald.getHp() <= 0) {  // WINNING
-                if (luie[0].getHp() <= 0 && (luie[1].getHp() <= 0) && (luie[2].getHp() <= 0)) {
-                    Log.e(this.getClass().getName(), " Zigg enermy double kill: ");
-//                    canvas.drawColor(Color.BLACK);
-                mMode = STATE_WIN;
-            }
-//            }
-//            // Boss attack
-//            if (donald.getHp() >= 0) {
-//                enemy_attack(canvas);
-//            }
-
-            if (Hero.getHp() <= 0) {   // hero die
-                mMode = STATE_LOSE;
-            }
-
-            // cause can not call e_attack_ai() propertly
-            if(luie[0].getHp() > 0) {
-                drawEnemy(canvas, luie[0], 0, sbf.get_random1(8), 18);
-            }
-            if(luie[1].getHp() > 0) {
-                drawEnemy(canvas, luie[1], 1, sbf.get_random1(8), 10);
-            }
-            if(luie[2].getHp() > 0) {
-                drawEnemy(canvas, luie[2], 2, 0, 8);
-            }
-//            	draw special
-            if (use_special == 1) {
-                use_special(canvas);
-            }
-            canvas.save();
 
         } // end running draw
 
         else if(mMode == STATE_LOSE) {
-            lose_flag_sound ++;
-
-            if (lose_flag_sound  == 1) {
-//                soundIds[10] = mpx.play(soundIds[10], 1, 1, 1, 0, 1);
-            } else {
-//                if(mpx != null) mpx.stop(soundIds[10]);
-            }
-            canvas.drawBitmap(mHeroMoving[6], Hero.getPosX(), Hero.getPosY(), null);
-            String text = "You lose ...";
-            Paint p = new Paint();
-            p.setColor(Color.RED);
-            canvas.drawText(text, Hero.getPosX() - 5, Hero.getPosY() - 40, p);
+            doDrawLose(canvas);
 //            	canvas.restore();
         } else  if(mMode == STATE_WIN) {
-//            win_sound_flag++; if(win_sound_flag ==1) {
-//                mpx.play(soundIds[9], 1, 1, 1, 0, 1);
-//            } else {
-//                mpx.stop(soundIds[9]);
-//            }
-            Log.e(this.getClass().getName(), " Teemo on duty: ");
-            String text = "Victory !... \n";
-            Paint p = sbf.newPaint(Color.RED, null, 35);
-            String text2 = "Acquired 32 golds.";
-
-            canvas.save();
-            canvas.drawBitmap(allclear, 0, 30, null);
-            canvas.drawBitmap(mHeroMoving[5], (scr_width/2-x_bound), (scr_height/2-y_bound), null);
-            canvas.drawBitmap(v, (scr_width/2-x_bound+18), (scr_height/2-y_bound-22), null);
-            canvas.drawText(text, (scr_width/2-x_bound), (scr_height/2 - 20), p);
-            canvas.drawText(text2, (scr_width/2-x_bound), (scr_height/2), p);
-
-            try {
-                if(canvas != null) {
-                }
-            } catch(NullPointerException e) {
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_HOME);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                myContext.startActivity(intent);
-            }
-
+            Log.e(this.getClass().getName(), " Teemo on duty: Victory!");
+            doDrawWinning(canvas);
 //            	canvas.restore();
         } else if (mMode == STATE_PAUSE) {
             canvas.save();
         } else {
             canvas.drawBitmap(mTitleImage, 0, scr_height/4, null);
         }
-        canvas.save();
-        canvas.restore();
     }      // end doDraw()
 
+    public void doDrawRunning(Canvas canvas) {
+        // TODO doDrawRunning()
+        canvas.drawBitmap(mBackgroundImage, 0, 0, null);
+        canvas.drawBitmap(mUi, 0, scr_height-mUi.getHeight(), null);
+        canvas.drawBitmap(mBg2, 0, 0, null);
+        canvas.drawBitmap(mFire, scr_width - 142, scr_height - (110 * scr_height / 1280) - 70*2, null); // hard code , snow size is 68x68
+        // fire button abow ui about 80px (~fire size)
+
+        canvas.drawBitmap(mMove, 72, scr_height - (110 * scr_height / 1280) - 70*2, null); // hard code , snow size is 66x72
+
+//            boss_attack(canvas);
+//            draw_enemy(canvas);
+//            donald.act(1, scr_width, scr_height);
+//            donald.move();
+        Paint paint = sbf.newPaint(Color.RED, Paint.Style.FILL_AND_STROKE, 0);
+
+        canvas.drawBitmap(mHeroMoving[Hero.getIdx()], Hero.getPosX(), Hero.getPosY(), null);
+
+//            if (donald.getHp() > 0) {
+//                drawBossHp(donald, canvas, paint);
+//            }
+        for(int ii = 0; ii < 3; ii ++) {
+            luie[ii].act(1, scr_width, scr_height);
+            luie[ii].move();
+            luie[ii].setBomb(bomb);
+            luie[ii].getBomb().dropBomb(luie[ii].getPosY(), 3/4*scr_height);
+
+            if (luie[ii].getHp() > 0) {
+                drawHpEnemy(luie[ii], canvas, paint); // TODO how to push this method to Sprite class
+            }
+        }
+        // Draw the speed gauge, with a two-tone effect
+//        canvas.save();
+
+        if (m_snow_fire == 10) {
+            int mTop = (scr_height-y_bound);      // Vị trí phía trên màn hình game đối với player (hero).
+            Hero.getBomb().throwDownY(12);
+            Hero.setIdx(2);  // hero throwing
+            if (Hero.getBomb().getY() < 25) Hero.getBomb().setY((scr_height-y_bound));
+            canvas.drawBitmap(bomb.getImage(2), Hero.getPosX() + 22, Hero.getBomb().getY()-22, null); // 22 la distance giua snow va shadow
+            canvas.drawBitmap(snow_shadow, Hero.getPosX() + 22, Hero.getBomb().getY(), null);
+
+            for (int ii = 0; ii <= (mTop/12); ii ++) {
+//                    hitTarget(donald, ii, 100);
+                hitTarget(luie[0], ii, 100);
+                hitTarget(luie[1], ii, 100);
+                hitTarget(luie[2], ii, 100); // fix me
+
+                m_snow_fire = 0;
+            } // end for loop
+        }
+
+//            if (donald.getHp() <= 0) {  // WINNING
+        if (luie[0].getHp() <= 0 && (luie[1].getHp() <= 0) && (luie[2].getHp() <= 0)) {
+//                    canvas.drawColor(Color.BLACK);
+//                    mMode = STATE_WIN;
+            Log.e(this.getClass().getName(), " Teemo on duty: Victory! ARAM 1");
+            doDrawWinning(canvas);
+        }
+//            }
+//            // Boss attack
+//            if (donald.getHp() >= 0) {
+//                enemy_attack(canvas);
+//            }
+
+        if (Hero.getHp() <= 0) {   // hero die
+            mMode = STATE_LOSE;
+        }
+
+        // cause can not call e_attack_ai() propertly
+        if(luie[0].getHp() > 0) {
+            drawEnemy(canvas, luie[0], 0, sbf.get_random1(8), 18);
+        }
+        if(luie[1].getHp() > 0) {
+            drawEnemy(canvas, luie[1], 1, sbf.get_random1(8), 10);
+        }
+        if(luie[2].getHp() > 0) {
+            drawEnemy(canvas, luie[2], 2, 0, 8);
+        }
+//            	draw special
+        if (use_special == 1) {
+            use_special(canvas);
+        }
+//        canvas.save();
+    }
+    public void doDrawPlay(Canvas canvas) {
+
+    }
+    public void doDrawReady(Canvas canvas) {
+
+    }
+    public void doDrawWinning(Canvas canvas) {
+    //    win_sound_flag++; if(win_sound_flag ==1) {
+    //        mpx.play(soundIds[9], 1, 1, 1, 0, 1);
+    //    } else {
+    //        mpx.stop(soundIds[9]);
+    //    }
+        String text = "Victory !... \n";
+        Paint p = sbf.newPaint(Color.RED, null, 35);
+        String text2 = "Acquired 32 golds.";
+
+    //        try {
+    //            if(canvas != null) {
+    //            }
+    //        } catch(NullPointerException e) {
+    //            Intent intent = new Intent(Intent.ACTION_MAIN);
+    //            intent.addCategory(Intent.CATEGORY_HOME);
+    //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    //            myContext.startActivity(intent);
+    //        }
+        try {
+            canvas.save();
+            canvas.drawBitmap(allclear, 0, 30, null);
+            canvas.drawBitmap(mHeroMoving[5], (scr_width/2-x_bound), (scr_height/2-y_bound), null);
+            canvas.drawBitmap(v, (scr_width/2-x_bound+18), (scr_height/2-y_bound-22), null);
+            canvas.drawText(text, (scr_width/2-x_bound), (scr_height/2 - 20), p);
+            canvas.drawText(text2, (scr_width / 2 - x_bound), (scr_height / 2), p);
+        } catch (NullPointerException e) {
+            System.exit(1);
+        }
+    }
+
+    public void doDrawLose(Canvas canvas) {
+        lose_flag_sound ++;
+
+        if (lose_flag_sound  == 1) {
+//                soundIds[10] = mpx.play(soundIds[10], 1, 1, 1, 0, 1);
+        } else {
+//                if(mpx != null) mpx.stop(soundIds[10]);
+        }
+        canvas.drawBitmap(mHeroMoving[6], Hero.getPosX(), Hero.getPosY(), null);
+        String text = "You lose ...";
+        Paint p = new Paint();
+        p.setColor(Color.RED);
+        canvas.drawText(text, Hero.getPosX() - 5, Hero.getPosY() - 40, p);
+    }
+
+    private void setInitialGameState() {
+
+    }
     /** ve special bay ngang man hinh roi quay lai 1 lan roi bien mat; */
     public void use_special(Canvas canvas) {
 //        	playHitTargetSound();
