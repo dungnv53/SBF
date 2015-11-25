@@ -231,7 +231,21 @@ class SBFThread extends Thread {
 
     @Override
     public void run() {
+        // Store the current time values.
+        long time1 = System.currentTimeMillis();
+        long time2;
+
         while (mRun) {
+            try {
+                // This is your target delta. 25ms = 40fps
+                Thread.sleep(25);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+
+            time2 = System.currentTimeMillis(); // Get current time
+            int delta = (int) (time2 - time1); // Calculate how long it's been since last update
+
             Canvas c = null;
             try {
                 c = mSurfaceHolder.lockCanvas(null);
@@ -240,7 +254,7 @@ class SBFThread extends Thread {
                 }
                 try{
                     updatePhysics();
-                    doDraw(c);
+                    doDraw(c, delta);
 //                    if (mMode == STATE_RUNNING) {
 //                        doDrawRunning(c);
 //                    } else if(mMode == STATE_WIN) {
@@ -261,6 +275,8 @@ class SBFThread extends Thread {
                     mSurfaceHolder.unlockCanvasAndPost(c);
                 }
             }  // hay bi thread end
+
+            time1 = time2; // Update our time variables.
         }
     }
 
@@ -414,7 +430,8 @@ class SBFThread extends Thread {
         int mLeft = Hero.getPosX() + 20; // vi snow lech ra 1 chut
         if ((dn.getBomb().getX()+20 >= mLeft) && (dn.getBomb().getX() - 10) <= mLeft) {
             if( (dn.getBomb().getY()+10 >= (180 - 12*fire_step)) && (dn.getBomb().getY()-20) <= (180 - 12*fire_step)) {
-                dn.setHp(dn.getHp() - hp_lose);
+                Log.e(this.getClass().getName(), " Good Hit Lose hp: " +dn.getHp());
+                dn.setHp(dn.getHp() - hp_lose);  // use loseHp
                 m_snow_fire = 0;
             }
         }
@@ -422,6 +439,7 @@ class SBFThread extends Thread {
 
     /* Draw rectangle | show hp (percent) like in other game: AOE (horizontal).
      * TODO nhieu so hardcode, cho qua SBF game cho nhe
+     * effects and item character using.
     * */
     public void drawEnemy(Canvas cv, Sprite huey, int snow_e_y_idx, int rand_donald_y, int h_y_step) {
 //        Log.e(this.getClass().getName(), " Fuck u: ");
@@ -441,7 +459,7 @@ class SBFThread extends Thread {
 
         if ((Hero.getPosX() - 8) <= huey.getPosX() && ((Hero.getPosX() + 8) >= huey.getPosX())
                 && (Hero.getPosY() - h_y_step <= test_snow_e_y[snow_e_y_idx]) && (Hero.getPosY() + h_y_step >= test_snow_e_y[snow_e_y_idx])) {
-            Hero.setHp(Hero.getHp()-2); // hero lose HP ?
+//            Hero.setHp(Hero.getHp()-2); // hero lose HP ?
         }
         if ( (Hero.getBomb().getX() <= (huey.getPosX() + 8)) && (Hero.getBomb().getX() >= (huey.getPosX() - 22))) {
             if ( (Hero.getBomb().getX() <= (huey.getPosY() + 30)) && (Hero.getBomb().getY() >= (huey.getPosY() - 10))) {
@@ -459,7 +477,7 @@ class SBFThread extends Thread {
      * TODO tách ra các hàm con như bên Snake, BoxJump: doDrawRunning, doDrawReady ...
      * Trong doDrawRunning cũng chia nhỏ handle cho bên SBFGame như BJ
      */
-    public void doDraw(Canvas canvas) {
+    public void doDraw(Canvas canvas, int delta) {
         if (mMode == STATE_RUNNING) { //state
 //            doDrawRunning(canvas);
             try {
@@ -536,6 +554,15 @@ class SBFThread extends Thread {
 
                 m_snow_fire = 0;
             } // end for loop
+
+            if ( (Hero.getBomb().getX() <= (donald.getPosX() + 80)) && (Hero.getBomb().getX() >= (donald.getPosX() - 80))) { // fix me 8 and 22
+                Log.e(this.getClass().getName(), " Ring the bell: " +donald.getPosX() + " y " + donald.getPosY());
+                if ( (Hero.getBomb().getX() <= (donald.getPosY() + 30)) && (Hero.getBomb().getY() >= (donald.getPosY() - 10))) {
+                    Log.e(this.getClass().getName(), " Donald Lose hp: " +donald.getHp());
+                    donald.loseHp(12); // fix me
+                    Hero.getBomb().setY(scr_height*2/3); // fai set lai snow_y ko thi hp mat lien tuc
+                }
+            }
         }
 
         if (donald.getHp() <= 0) {  // WINNING
@@ -659,7 +686,7 @@ class SBFThread extends Thread {
         canvas.drawBitmap(snow_shadow, donald.getBomb().getX(), donald.getBomb().getY(), null);
         if ((Hero.getPosX() + 12) >= donald.getPosX() && ((Hero.getPosX() - 12) <= donald.getPosX())
                 && (Hero.getPosY() + 12 >= donald.getBomb().getY()) && (Hero.getPosY() - 12 <= donald.getBomb().getY())) {
-            Hero.loseHp(4);
+//            Hero.loseHp(4);
         }
     }
 

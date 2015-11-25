@@ -14,6 +14,11 @@ public class Donald {
 	private int hp = 56;
 	private int max_hp = 56;
 	private int idx;
+	private int[] in_effects; // TODO array
+	private int[] in_effect_timeouts;
+	private int use_item;
+	private int[] items;
+
 
     private int state; // nhan vat dinh effect
 	
@@ -36,8 +41,10 @@ public class Donald {
 	public void setHp(int paramInt) {
 		this.hp = paramInt;
 	}
-	public void loseHp(int paramInt) {      // Nhân vật mất máu 
-		this.hp -= paramInt;
+	public void loseHp(int paramInt) {      // Nhân vật mất máu
+		if(this.getHp() >= 0) {
+			this.hp -= paramInt;
+		}
 	}
 	public void setDonaldX(int paramInt) {       // Đặt vị trí X cho nhân vật 
 		this.dn_x = paramInt;
@@ -228,4 +235,27 @@ public class Donald {
         return false;
     }
 
+	public int[] getIn_effects() {
+		return in_effects;
+	}
+
+	public void setIn_effects(int[] in_effects) {
+		this.in_effects = in_effects;
+	}
+
+	public int[] getIn_effect_timeouts() {
+		return in_effect_timeouts;
+	}
+
+	public void setIn_effect_timeouts(int[] in_effect_timeouts) {
+		this.in_effect_timeouts = in_effect_timeouts;
+	}
+
+	public int getUse_item() {
+		return use_item;
+	}
+
+	public void setUse_item(int use_item) {
+		this.use_item = use_item;
+	}
 }
