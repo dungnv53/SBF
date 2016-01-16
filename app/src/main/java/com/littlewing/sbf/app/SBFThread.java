@@ -152,8 +152,11 @@ class SBFThread extends Thread {
         mEnemy = sbf.loadEnemy(mEnemy, myContext);
         mBoss = sbf.loadBoss(mBoss, myContext);
 
+        double zoom_lvl = 1.5;
         snow_h = BitmapFactory.decodeResource(res, R.drawable.item3_0);
+        snow_h =  Bitmap.createScaledBitmap(snow_h, (int) (snow_h.getWidth() * zoom_lvl), (int) (snow_h.getHeight() * zoom_lvl), true);
         snow_shadow = BitmapFactory.decodeResource(res, R.drawable.shadow0_3);
+        snow_shadow = Bitmap.createScaledBitmap(snow_shadow, (int) (snow_shadow.getWidth() * zoom_lvl), (int) (snow_shadow.getHeight() * zoom_lvl), true);
 
         // Mana hero cung voi ban tay = 2 PNG
         img_Special[0] = BitmapFactory.decodeResource(res, R.drawable.special0_3);
@@ -610,6 +613,7 @@ class SBFThread extends Thread {
     //    } else {
     //        mpx.stop(soundIds[9]);
     //    }
+        canvas.drawColor(Color.WHITE);
         String text = "Victory !... \n";
         Paint p = sbf.newPaint(Color.RED, null, 35);
         String text2 = "Acquired 32 golds.";
@@ -625,7 +629,7 @@ class SBFThread extends Thread {
     //        }
         try {
             canvas.save();
-            canvas.drawBitmap(allclear, 0, 30, null);
+            canvas.drawBitmap(allclear, 0, 150, null);
             canvas.drawBitmap(mHeroMoving[5], (scr_width/2-x_bound), (scr_height/2-y_bound), null);
             canvas.drawBitmap(v, (scr_width/2-x_bound+18), (scr_height/2-y_bound-22), null);
             canvas.drawText(text, (scr_width/2-x_bound), (scr_height/2 - 20), p);

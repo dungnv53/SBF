@@ -58,50 +58,76 @@ public class SBFGame {
     // Load hero sprite images. TODO move to a method handle all
     public Bitmap[] loadHero(Bitmap mBmp[], Context mContext) {
         Resources res = mContext.getResources();
+        double zoom_lvl = 1.5;
 
-        mBmp[0] = BitmapFactory.decodeResource(res, R.drawable.hero3_0);
-        mBmp[1] = BitmapFactory.decodeResource(res, R.drawable.hero3_1);
-        mBmp[2] = BitmapFactory.decodeResource(res, R.drawable.hero3_2);
-        mBmp[3] = BitmapFactory.decodeResource(res, R.drawable.hero3_3);
-        mBmp[4] = BitmapFactory.decodeResource(res, R.drawable.hero3_4);
-        mBmp[5] = BitmapFactory.decodeResource(res, R.drawable.hero_vic3);
-        mBmp[6] = BitmapFactory.decodeResource(res, R.drawable.hero_lose3);
+        Bitmap tmpBmp = BitmapFactory.decodeResource(res, R.drawable.hero3_0);
+        mBmp[0] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp  = BitmapFactory.decodeResource(res, R.drawable.hero3_1);
+        mBmp[1] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.hero3_2);
+        mBmp[2] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.hero3_3);
+        mBmp[3] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.hero3_4);
+        mBmp[4] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.hero_vic3);
+        mBmp[5] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.hero_lose3);
+        mBmp[6] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
 
         return mBmp;
     }
 
     public Bitmap[] loadEnemy(Bitmap mBmp[], Context mContext) {
         Resources res = mContext.getResources();
+        double zoom_lvl = 1.5;
 
-        mBmp[0] = BitmapFactory.decodeResource(res, R.drawable.enemy00_3);
-        mBmp[1] = BitmapFactory.decodeResource(res, R.drawable.enemy01_3);
-        mBmp[2] = BitmapFactory.decodeResource(res, R.drawable.enemy02_3);
-        mBmp[3] = BitmapFactory.decodeResource(res, R.drawable.enemy03_3);
-        mBmp[4] = BitmapFactory.decodeResource(res, R.drawable.enemy00_3);
+        Bitmap tmpBmp = BitmapFactory.decodeResource(res, R.drawable.enemy00_3);
+        mBmp[0] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp  = BitmapFactory.decodeResource(res, R.drawable.enemy01_3);
+        mBmp[1] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp  = BitmapFactory.decodeResource(res, R.drawable.enemy02_3);
+        mBmp[2] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp  = BitmapFactory.decodeResource(res, R.drawable.enemy03_3);
+        mBmp[3] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp  = BitmapFactory.decodeResource(res, R.drawable.enemy00_3);
+        mBmp[4] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
 
         return mBmp;
     }
 
     public Bitmap[] loadBoss(Bitmap mBmp[], Context mContext) {
         Resources res = mContext.getResources();
+        double zoom_lvl = 1.5;
 
-        mBmp[0] = BitmapFactory.decodeResource(res, R.drawable.boss20_3);
-        mBmp[1] = BitmapFactory.decodeResource(res, R.drawable.boss21_3);
-        mBmp[2] = BitmapFactory.decodeResource(res, R.drawable.boss22_3);
-        mBmp[3] = BitmapFactory.decodeResource(res, R.drawable.boss23_3);
-        mBmp[4] = BitmapFactory.decodeResource(res, R.drawable.boss20_3);
+        Bitmap tmpBmp = BitmapFactory.decodeResource(res, R.drawable.boss20_3);
+        mBmp[0] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.boss21_3);
+        mBmp[1] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.boss22_3);
+        mBmp[2] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.boss23_3);
+        mBmp[3] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.boss20_3);
+        mBmp[4] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
 
         return mBmp;
     }
 
     public Bitmap[] loadItem(Bitmap mBmp[], Context mContext) {
         Resources res = mContext.getResources();
+        double zoom_lvl = 1.5;
 
-        mBmp[0] = BitmapFactory.decodeResource(res, R.drawable.item3_0);
-        mBmp[1] = BitmapFactory.decodeResource(res, R.drawable.item1_3);
-        mBmp[2] = BitmapFactory.decodeResource(res, R.drawable.item2_3);
-        mBmp[3] = BitmapFactory.decodeResource(res, R.drawable.item3_3);
-        mBmp[4] = BitmapFactory.decodeResource(res, R.drawable.item4_3);
+        Bitmap tmpBmp = BitmapFactory.decodeResource(res, R.drawable.item3_0);
+        mBmp[0] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.item1_3);
+        mBmp[1] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.item2_3);
+        mBmp[2] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.item3_3);
+        mBmp[3] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
+        tmpBmp = BitmapFactory.decodeResource(res, R.drawable.item4_3);
+        mBmp[4] = Bitmap.createScaledBitmap(tmpBmp, (int) (tmpBmp.getWidth() * zoom_lvl), (int) (tmpBmp.getHeight() * zoom_lvl), true);
 
         return mBmp;
     }
